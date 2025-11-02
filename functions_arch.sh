@@ -1,0 +1,27 @@
+#0 not working in linux mint
+#1 working in linux mint
+#2 testing if it is working under linxu mint
+
+function__arch__add_alias=1
+function__arch__add_device_label=1
+function__arch__add_dns=1
+function__arch__add_function=1
+function__arch__add_lightdm=1
+function__arch__add_sudo=2
+function__arch__Clean_Folder=2
+function__arch__dco=1
+function__arch__dcoa=1
+function__arch__dcod=1
+function__arch__dcow=1
+function__arch__ext4setup=1
+function__arch__md=1
+function__arch__mds=1
+function__arch__mdr=1
+function__arch__pa=0
+function__arch__par=0
+function__arch__paru_clean=0
+function__arch__pause=1
+function__arch__pf=1
+function__arch__sp=2
+function__arch__start_s=2
+function__arch__ssu=1
