@@ -134,9 +134,9 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
 			return
 		fi
 		wget -O ~/Downloads/$repo-latest.deb "$url"
-		#apt install ~/Downloads/$repo-latest.deb -y
+		apt install ~/Downloads/$repo-latest.deb -y
 		#sudo -v #maby temeory
-		sudo dpkg -i ~/Downloads/$repo-latest.deb
+		#sudo dpkg -i ~/Downloads/$repo-latest.deb
 		#sudo apt install -y ~/Downloads/$repo-latest.deb &
 		#sudo DEBIAN_FRONTEND=noninteractive apt install -y ~/Downloads/$repo-latest.deb || true
 		#apt install ~/Downloads/$repo-latest.deb -y || true
