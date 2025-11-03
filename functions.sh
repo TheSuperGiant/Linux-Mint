@@ -134,9 +134,35 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
 			return
 		fi
 		wget -O ~/Downloads/$repo-latest.deb "$url"
-		apt install ~/Downloads/$repo-latest.deb -y
+		#apt install ~/Downloads/$repo-latest.deb -y
+		#sudo -v #maby temeory
+		sudo dpkg -i ~/Downloads/$repo-latest.deb
+		#sudo apt install -y ~/Downloads/$repo-latest.deb &
+		#sudo DEBIAN_FRONTEND=noninteractive apt install -y ~/Downloads/$repo-latest.deb || true
+		#apt install ~/Downloads/$repo-latest.deb -y || true
+		#sudo DEBIAN_FRONTEND=noninteractive apt install -y ~/Downloads/$repo-latest.deb >/dev/null 2>&1 || true
 	fi
 }
+
+
+
+
+
+
+
+
+
+
+
+
+#sudo dpkg --configure -a
+#sudo apt-get install -f
+#sudo apt-get update
+#sudo apt-get upgrade
 update(){
-	apt update && sudo mintupdate-cli upgrade -y
+	sudo apt update
+	while [[ $updates != 0 ]]; do
+		sudo mintupdate-cli upgrade -y
+		updates=$(mintupdate-cli list | wc -l)
+	done
 }
