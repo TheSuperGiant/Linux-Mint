@@ -14,8 +14,7 @@ github_program_updater_programs(){
 				prameters_parts[$i]="$(sed 's/^[[:space:]]*//' <<<"${prameters_parts[$i]}")"
 			done
 			echo "$program_name"
-			#github_program_updater -r "${prameters_parts[0]}" -u "${prameters_parts[1]}" "${prameters_parts[@]:2}"
-			github_program_updater -r "${prameters_parts[0]}" -u "${prameters_parts[1]}" "${prameters_parts[@]:2}" "$1"
+			github_program_updater -r "${prameters_parts[0]}" -u "${prameters_parts[1]}" "${prameters_parts[@]:2}" ${1:+$1}
 		fi
 	done
 }
