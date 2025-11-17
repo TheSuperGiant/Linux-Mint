@@ -8,7 +8,7 @@ github_program_updater_programs(){
 	for github_program in "${github_program_updater_programs[@]}"; do
 		program_name="${github_program%%:*}"
 		prameters="${github_program##*:}"
-		if [ "$(eval echo \$App_Install__$program_name)" == "1" ]; then
+		if [[ "$(eval echo \$App_Install__$program_name)" == "1" ]] || [[ "$1" == "-U" ]]; then
 			IFS=';' read -ra prameters_parts <<< "${prameters}"
 			for i in "${!prameters_parts[@]}"; do
 				prameters_parts[$i]="$(sed 's/^[[:space:]]*//' <<<"${prameters_parts[$i]}")"
