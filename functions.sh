@@ -1,3 +1,6 @@
+ap(){
+	apt_fail apt $@
+}
 apt_addrepo(){
 	download_location="/run"
 	save_location="/etc/apt/keyrings/"
@@ -21,6 +24,41 @@ apt_addrepo(){
 	fi
 	echo "------------------------------------"
 }
+apt_fail(){
+	while [[ $dpkg_error != "0" ]];do
+		while IFS= read -r line1; do
+			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
+			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
+				local dpkg_error=1
+			fi
+			if [[ $dpkg_error == "1" ]];then
+				sudo dpkg --configure -a
+				sudo apt install -f
+				sudo apt update
+				sudo apt upgrade -y
+			else
+				local dpkg_error=0
+			fi
+		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
+		#done < <(sudo script -q -c "sudo LANG=C $*")
+	done
+}
+git_adding(){
+	if [[ "$1" =~ ^("-p"|"-push"|"--push") ]];then
+		#$2 path
+		#$- repo name for push
+		#$3 url.git
+		git init "$2"
+		git -C "$2" remote add origin "$3"
+	else	
+		#$1 github user
+		#$2 github repo
+		#$- repo name for push
+		#$3 path (optional)
+		git clone https://github.com/"$1"/"$2".git "$3"
+		git remote add origin git@github.com:"$1"/"$2".git
+	fi
+}
 github_program_updater(){
 	error() {
 		printf "\e[1;91m\n\n$1\e[0m\n\n"
@@ -37,10 +75,11 @@ parameters
   -u --user		[text] user name in github
 	
 parameters (optional)
-  -i --installed		[text] Remove from the string in the installed version.
+  -i --installed	[text] Remove from the string in the installed version.
   -o --online		[text] Remove from the string in the online version.
   -R --row		[number] Select the correct row if multiple entries exist.
   -s --search		[text] searchstring for download url
+  -U --update		Update the installed programs
 	
 parameters (view variable value)
   -I --info		get variable value of: 'url online_version installed_version'
@@ -51,7 +90,8 @@ example:
 github_program_updater -r \"qwerty\" -u \"keyboard\"
 github_program_updater -r \"qwerty\" -u \"keyboard\" -s \"qwerty.*x86_64.*\" -R \"1\" -o \" \" -i\" \"
 github_program_updater -r \"qwerty\" -u \"keyboard\" -I
-github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
+github_program_updater -r \"qwerty\" -u \"keyboard\" -j
+github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
 	}
 	if [[ $# == 0 ]] || printf '%s\n' "$@" | grep -qE '^-(h|help)$|^--help$'; then
 		help_text
@@ -91,13 +131,25 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
                 local user="$2"
                 shift 2
                 ;;
-            *)
+            -U|-update|--update)
+                local update=1
+                shift
+                ;;
+			*)
                 echo "Unknown option: $1"
 				help_text
                 return
                 ;;
         esac
     done
+	if dpkg -l | grep -q "^ii.*$repo"; then
+		#local installed_version=$(dpkg -l | grep $repo | awk 'NR==1 {print $3}')
+		local installed_version=$(dpkg -l | grep $repo | awk 'NR==1 {print $3}' | sed 's/-.*//' | tr -cd '0-9.')
+	fi
+	#if local installed version must stript. -i -installed --installed
+	if [[ "$update" == "1" && "$installed_version" == "" ]];then
+		return
+	fi
 	local url="https://api.github.com/repos/$user/$repo/releases/latest"
 	local json_url=$(wget -qO- $url)
 	if [[ -z "$repo" && -z "$user" ]];then
@@ -111,11 +163,6 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
 	fi
 	local online_version=$(echo "$json_url" | grep -oP '"tag_name": "\K(.*)(?=")' | sed 's/-.*//' | tr -cd '0-9.')
 	#if online version must stript -o -online --onilne
-	if dpkg -l | grep -q "^ii.*$repo"; then
-		#local installed_version=$(dpkg -l | grep $repo | awk 'NR==1 {print $3}')
-		local installed_version=$(dpkg -l | grep $repo | awk 'NR==1 {print $3}' | sed 's/-.*//' | tr -cd '0-9.')
-	fi
-	#if local installed version must stript. -i -installed --installed
 	local url=$(echo "$json_url" | grep "browser_download_url" | grep -oP "\"browser_download_url\": \"\K[^\"]*$search\.deb\"")
 	if [[ -n "$row" ]];then
 		local url=$(echo "$url" | head -n $row)
@@ -133,6 +180,8 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
 			printf '%s\n' "url: $url"
 			return
 		fi
+		#box_sub "$repo - installing..."
+		box_sub "$repo"
 		wget -O ~/Downloads/$repo-latest.deb "$url"
 		apt install ~/Downloads/$repo-latest.deb -y
 		#sudo -v #maby temeory
@@ -143,26 +192,35 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -j"
 		#sudo DEBIAN_FRONTEND=noninteractive apt install -y ~/Downloads/$repo-latest.deb >/dev/null 2>&1 || true
 	fi
 }
-
-
-
-
-
-
-
-
-
-
-
-
-#sudo dpkg --configure -a
-#sudo apt-get install -f
-#sudo apt-get update
-#sudo apt-get upgrade
 update(){
-	sudo apt update
+	ap update
 	while [[ $updates != 0 ]]; do
-		sudo mintupdate-cli upgrade -y
+		apt_fail mintupdate-cli upgrade -y
 		updates=$(mintupdate-cli list | wc -l)
 	done
+	flatpak update -y
+	if [[ $1 != "-g" ]];then
+		source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/parts/github_program_updater_programs.sh)
+		github_program_updater_programs -U
+	fi
+}
+wdroid(){
+	if [[ "$1" =~ ^(stop|reboot|restart)$ ]]; then
+		sudo systemctl stop waydroid-container
+	waydroid session stop
+	fi
+	if [[ "$1" =~ ^(reboot|restart)$ ]];then
+		sleep 10
+	fi
+	if [[ "$1" =~ ^(start|reboot|restart)$ ]]; then
+		if ! systemctl is-active --quiet waydroid-container; then
+			echo "inactive"
+			sudo systemctl start waydroid-container
+		fi
+		weston --backend=x11-backend.so --xwayland --socket=wayland-weston &
+		WAYLAND_DISPLAY=wayland-weston waydroid session start &
+		#] Failed to get service waydroidplatform, trying again...
+		sleep 1
+		WAYLAND_DISPLAY=wayland-weston waydroid show-full-ui &
+	fi
 }
