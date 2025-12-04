@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+# Disclaimer:
+# This script is provided as-is, without any warranty or guarantee.
+# By using this script, you acknowledge that you do so at your own risk.
+# I am not responsible for any damage, data loss, or other issues that may result from the use of this script.
+
+total_ram=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+ram=$(echo $total_ram / 1000 | bc) #in mb
 
 interface_name=$(ip route | awk '/^default/ {print $5}')
 
@@ -14,17 +21,24 @@ http_check() {
 
 #check for loaded in functions.
 
-data=$(curl -s https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/Stable/functions.sh)
-function_sh="https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/Stable/functions.sh"
-function_sh_mint="https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/functions.sh"
+function_sh=$(curl -s https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/functions.sh)
+function_sh_mint=$(curl -s "https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions.sh")
 #local if internet isnt availble
 
-for function in $function_sh $function_sh_mint;do
-	source <(curl -s -L "$function" | sed -E '/^alias / s/\\"/"/g' | sed -E 's/^alias ([^=]+)=["](.*)["]$/\1() {\n  \2\n}/')
+
+
+for function in "$function_sh" "$function_sh_mint";do
+	while IFS= read -r line; do
+		if [[ "$line" == alias* ]]; then
+			alias=$(echo "$line" | cut -d' ' -f2 | cut -d'=' -f1)
+			unalias -a "$alias"
+		fi
+	done < <(echo "$function")
+	source <(echo "$function" | sed -E '/^alias / s/\\"/"/g' | sed -E 's/^alias ([^=]+)=["](.*)["]$/\1() {\n  \2\n}/')
 done
 
 ssu
-#dns check if it adds that with the function
+
 if [[ $DNS_Quad9 == 1 ]];then
 	add_dns 9.9.9.9 149.112.112.112 2620:fe::fe 2620:fe::9 $adding_dns
 elif [[ $DNS_Cloudflare == 1 ]];then
@@ -48,26 +62,24 @@ if [[ $function__box_sub == "1" ]];then
 	function__box="1"
 fi
 
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/functions_arch.sh)
-for function in $(curl -s $function_sh | grep -oP '^\s*\K\w+(?=\()'); do
-	if [ "$(eval echo \${function__$function})" == "1" ] && [ "$(eval echo \${function__arch__$function})" == "1" ] && [[ "$(curl -s -L "$function_sh" | awk "/^$function\\(\\)/ {f=1} f; /^}/ {f=0}")" != "$(sed -n "/^$function()/,/^}/p" ~/.bashrc)" ]];then
-		echo "Updating .bashrc with the latest $function function code."
-		if [[ "$(sed -n "/^$function()/,/^}/p" ~/.bashrc)" != "" ]];then
-			sed -i "/^$function()/,/^}/d" ~/.bashrc
-		fi
-		curl -s -L $function_sh | awk "/^$function\\(\\)/ {f=1} f; /^}/ {f=0}" >> ~/.bashrc
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions_arch.sh)
+for function in $(functi "$function_sh"); do
+	if [[ "$(eval echo \${function__arch__$function})" == "1" ]];then
+		function_adding "$function" "$function_sh"
 	fi
 done
+for function in $(functi "$function_sh_mint"); do
+	function_adding "$function" "$function_sh_mint"
+done
 
-for alias in $(curl -s $function_sh | grep -oP '^\s*alias\s+\K\w+'); do
-	alias_code=$(curl -s -L $function_sh | grep "^alias $alias=")
-	if [ "$(eval echo \${function__$alias})" == "1" ] && [ "$(eval echo \${function__arch__$alias})" == "1" ] && [[ $alias_code != "$(sed -n "/^alias $alias=/p" ~/.bashrc)" ]];then
-		echo "Updating .bashrc with the latest $alias alias code."
-		if [[ "$(sed -n "/^alias $alias=/p" ~/.bashrc)" != "" ]];then
-			sed -i "/^alias $alias=/d" ~/.bashrc
-		fi
-		echo $alias_code >> ~/.bashrc
+for alias in $(aliasi "$function_sh"); do
+	if [[ "$(eval echo \${function__arch__$alias})" == "1" ]];then
+		alias_adding "$alias" "$function_sh"
 	fi
+done
+for alias in $(aliasi "$function_sh_mint"); do
+	alias_adding "$alias" "$function_sh_mint"
 done
 
 ubuntu_version_name=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
@@ -135,11 +147,11 @@ for debload in "${Debloading__linux_mint[@]}"; do
 	fi
 done
 if [ "$Debloading__linux_mint__update_manager" == "1" ];then
+	#this code need to be checked. for echo edding row and all the other things its doing
 	sudo chmod -x /usr/bin/mintupdate
 	mkdir -p ~/.config/autostart
-	cp /etc/xdg/autostart/mintupdate.desktop ~/.config/autostart/
-	echo "Hidden=true" >> ~/.config/autostart/mintupdate.desktop
-	echo "update manager disabled"
+	cp /etc/xdg/autostart/mintupdate.desktop ~/.config/autostart/ #checking later
+	echo "Hidden=true" >> ~/.config/autostart/mintupdate.desktop && echo "update manager disabled at boot"
 fi
 sudo apt autoremove
 
@@ -149,10 +161,34 @@ if [[ $files__linux_mint__background_images == "1" ]];then
 fi
 
 #add_device_label
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/Stable/parts/add_device_label.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/add_device_label.sh)
+
+tmp(){
+	local new_value="tmpfs  /tmp  tmpfs  size=$1,mode=1777  0  0"
+	if ! sudo grep -q "$new_value" /etc/fstab; then
+		local old_value=$(grep "/tmp" /etc/fstab)
+		if [[ "$old_value" != "" ]];then
+			sudo sed -i "\|$old_value|d" /etc/fstab
+		fi
+		sudo bash -c "echo \"$new_value\" >> /etc/fstab" && echo "\tmp moved to ram size set '$1' + added /etc/fstab"
+		restart=1
+	fi
+}
+if [[ "$ram__tmp" == 1 ]];then
+	if [[ "$ram" -ge "32000" ]];then
+		tmp 4G
+	elif [[ "$ram" -ge "16000" ]];then
+		tmp 2G
+	elif [[ "$ram" -ge "8000" ]];then
+		tmp 1G
+	fi
+fi
+#this part of ram_tmp must set after github_git and after add_device_label
+#switching tmp cleaning disk tmp folder at poweroff must created
+#file on the place presits of the git repo download else curl to tmp so it can remove itself.
 
 #personal folders
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/Stable/parts/personal_folders.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/personal_folders.sh)
 
 box_part "updating"
 
@@ -218,6 +254,7 @@ fi
 if [ "$App_Install__winboat" == "1" ];then
 	App_Install__docker=1
 	App_Install__flatpak=1
+	restart=1
 fi
 if [ "$script_main" == "1" ];then
 	App_Install__git=1
@@ -236,7 +273,8 @@ fi
 
 #before 3
 
-box_part "Adding APT repositories..."
+box_part "Adding APT repositories"
+#box_part "Adding APT repositories..."
 
 #mega based on ubuntu version
 #mega=""
@@ -275,7 +313,7 @@ box_part "Installing programs"
 sudo apt update
 
 #apt install
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/program_install_list__apt.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
 	if [ "$(eval echo \$App_Install__$key)" == "1" ];then
@@ -315,6 +353,7 @@ if [[ "$App_Install__hp_printer" == "1" ]];then
 fi
 if [ "$App_Install__notepadPlusPlus" == "1" ];then
 	if ! [ -f "$HOME/.wine/drive_c/Program Files/Notepad++/notepad++.exe" ]; then
+		box_sub "notepad++"
 		url=$(wget -qO- https://api.github.com/repos/notepad-plus-plus/notepad-plus-plus/releases/latest | grep "browser_download_url" | grep -oP "\"browser_download_url\": \"\K[^\"]*x64.exe\"" | sed 's/"$//')
 		wget -O ~/Downloads/npp-latest-installer.exe "$url"
 		wine ~/Downloads/npp-latest-installer.exe
@@ -332,12 +371,12 @@ if [ "$App_Install__pcloud" == "1" ];then
 	
 	#after that
 	
-	chmod +x ~/Downloads/pcloud
-	~/Downloads/pcloud &
+	#chmod +x ~/Downloads/pcloud
+	#~/Downloads/pcloud &
 fi
 
 #flatpak list
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/program_install_list__Flatpak.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__Flatpak.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
 	if [ "$(eval echo \$App_Install__$key)" == "1" ];then
@@ -365,7 +404,7 @@ if [ "$game_dependencies" == "1" ];then
 fi
 
 #github_program_updater
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/parts/github_program_updater_programs.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/parts/github_program_updater_programs.sh)
 github_program_updater_programs
 
 
@@ -397,7 +436,7 @@ if [ "$Firewall__Default" == "1" ];then
 fi
 
 #settings
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/Stable/parts/settings.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
 if [[ "$script_main" == "1" ]];then
 	git_repo="linux_mint"
@@ -411,7 +450,7 @@ if [[ "$App_Install__waydroid" == "1" ]];then
 	sudo modprobe ashmem_linux
 fi
 
-if [[ "restart" == "1" ]];then
+if [[ "$restart" == "1" ]];then
 	r="restart required"
 	echo -e "\n\n\n"
 	echo -e "\e[1;93m$r\e[0m"
