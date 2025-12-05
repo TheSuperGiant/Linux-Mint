@@ -151,7 +151,7 @@ if [ "$Debloading__linux_mint__update_manager" == "1" ];then
 	sudo chmod -x /usr/bin/mintupdate
 	mkdir -p ~/.config/autostart
 	cp /etc/xdg/autostart/mintupdate.desktop ~/.config/autostart/ #checking later
-	echo "Hidden=true" >> ~/.config/autostart/mintupdate.desktop && echo "update manager disabled at boot"
+	echo "Hidden=true" >> ~/.config/autostart/mintupdate.desktop && echo "update manager disabled on boot"
 fi
 sudo apt autoremove
 
