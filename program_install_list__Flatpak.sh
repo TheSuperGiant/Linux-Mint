@@ -5,7 +5,7 @@ declare -a App_Install=(
 	"anydesk:	com.anydesk.Anydesk"
 	#"brave:	com.brave.Browser"
 	"discord:	com.discordapp.Discord"
-	"element:	im.riot.Riot"
+	#"element:	im.riot.Riot"
 	#"firefox:	org.mozilla.firefox"
 	"google_chrome:	com.google.Chrome"
 	"grayjay:	app.grayjay.Grayjay"

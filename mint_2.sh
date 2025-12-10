@@ -39,19 +39,22 @@ done
 
 ssu
 
-if [[ $DNS_Quad9 == 1 ]];then
-	add_dns 9.9.9.9 149.112.112.112 2620:fe::fe 2620:fe::9 $adding_dns
-elif [[ $DNS_Cloudflare == 1 ]];then
-	add_dns 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 $adding_dns
-fi
+#special links
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/dns.sh)
+
+#special links
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/Special_link.sh)
 
 #function required 1
-if [[ $function__update == "1" ]];then
+if [[ $function__update == "1" ]];then 
 	function__ap="1"
 	function__github_program_updater="1"
 fi
 if [[ $function__github_program_updater == "1" ]];then
 	function__box_sub="1"
+fi
+if [[ $function__git_u == "1" ]];then
+	error="1"
 fi
 
 #function required 2
@@ -282,6 +285,7 @@ mullvad="sudo curl -fsSLo _DIR_/mullvad-keyring.asc https://repository.mullvad.n
 declare -a apt_addrepo_programs=(
 	"brave;	sudo curl -fsSLo _DIR_/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main; brave-browser-release"
 	"docker;	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o _DIR_/docker-archive-keyring.gpg;deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable; docker"
+	"element;	sudo wget -O _DIR_/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg ;deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main; element-io"
 	"megasync;	curl -fsSL https://mega.nz/linux/repo/xUbuntu_24.04/Release.key | sudo gpg --dearmor -o _DIR_/mega.gpg; deb [arch=amd64 signed-by=/etc/apt/keyrings/mega.gpg] https://mega.nz/linux/repo/xUbuntu_24.04/ ./; megasync"
 	"mullvad_browser;	$mullvad"
 	"mullvad_VPN;	$mullvad"

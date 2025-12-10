@@ -26,6 +26,7 @@ apt_addrepo(){
 }
 apt_fail(){
 	while [[ $dpkg_error != "0" ]];do
+		#local dpkg_error=0 maby needed?
 		while IFS= read -r line1; do
 			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
@@ -42,22 +43,6 @@ apt_fail(){
 		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
 		#done < <(sudo script -q -c "sudo LANG=C $*")
 	done
-}
-git_adding(){
-	if [[ "$1" =~ ^("-p"|"-push"|"--push") ]];then
-		#$2 path
-		#$- repo name for push
-		#$3 url.git
-		git init "$2"
-		git -C "$2" remote add origin "$3"
-	else	
-		#$1 github user
-		#$2 github repo
-		#$- repo name for push
-		#$3 path (optional)
-		git clone https://github.com/"$1"/"$2".git "$3"
-		git remote add origin git@github.com:"$1"/"$2".git
-	fi
 }
 github_program_updater(){
 	error() {
@@ -200,7 +185,7 @@ update(){
 	done
 	flatpak update -y
 	if [[ $1 != "-g" ]];then
-		source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/stable/parts/github_program_updater_programs.sh)
+		source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/parts/github_program_updater_programs.sh)
 		github_program_updater_programs -U
 	fi
 }
