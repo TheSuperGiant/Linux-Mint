@@ -39,7 +39,7 @@ done
 
 ssu
 
-#special links
+#dns
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/dns.sh)
 
 #special links
@@ -186,7 +186,6 @@ if [[ "$ram__tmp" == 1 ]];then
 		tmp 1G
 	fi
 fi
-#this part of ram_tmp must set after github_git and after add_device_label
 #switching tmp cleaning disk tmp folder at poweroff must created
 #file on the place presits of the git repo download else curl to tmp so it can remove itself.
 
@@ -442,10 +441,18 @@ fi
 #settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
-if [[ "$script_main" == "1" ]];then
-	git_repo="linux_mint"
+#if [[ "$script_main" == "1" ]];then
+	#git_repo="linux_mint"
+#fi
+
+#github repos
+if [[ "$script_main" == 1 || "$script_startup" == 1 ]];then
+	git_repo__thesupergiant__arch=1
+	git_repo__thesupergiant__linux_mint=1
 fi
-#source
+
+#github updater
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/github_git_repo.sh)
 
 if [[ "$App_Install__waydroid" == "1" ]];then
 	#list based on variable.
