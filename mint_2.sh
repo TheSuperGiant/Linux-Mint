@@ -100,6 +100,7 @@ esac
 ##docker
 #sudo apt remove docker docker-engine docker.io containerd runc
 
+box_part 
 sudo apt update
 
 box_part "Debloading"
@@ -350,9 +351,6 @@ fi
 if [ "$App_Install__docker" == "1" ];then
 	sudo usermod -aG docker $USER
 	restart=1
-fi
-if [[ "$App_Install__hp_printer" == "1" ]];then
-	
 fi
 if [ "$App_Install__notepadPlusPlus" == "1" ];then
 	if ! [ -f "$HOME/.wine/drive_c/Program Files/Notepad++/notepad++.exe" ]; then
