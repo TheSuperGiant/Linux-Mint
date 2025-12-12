@@ -100,7 +100,7 @@ esac
 ##docker
 #sudo apt remove docker docker-engine docker.io containerd runc
 
-box_part 
+box_part "apt list update"
 sudo apt update
 
 box_part "Debloading"
@@ -277,7 +277,6 @@ fi
 #before 3
 
 box_part "Adding APT repositories"
-#box_part "Adding APT repositories..."
 
 #mega based on ubuntu version
 #mega=""
@@ -438,10 +437,6 @@ fi
 
 #settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
-
-#if [[ "$script_main" == "1" ]];then
-	#git_repo="linux_mint"
-#fi
 
 #github repos
 if [[ "$script_main" == 1 || "$script_startup" == 1 ]];then
