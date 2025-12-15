@@ -226,6 +226,7 @@ fi
 #later testing i cannot do it now.
 if [[ $gpu == *"nvidia"* ]]; then
     echo "NVIDIA GPU detected"
+	#testing drivers check verstion to install
 	sudo ubuntu-drivers autoinstall
 elif [[ $gpu == *"AMD"* ]]; then
     echo "AMD GPU detected"
