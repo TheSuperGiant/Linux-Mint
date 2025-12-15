@@ -4,6 +4,9 @@
 # By using this script, you acknowledge that you do so at your own risk.
 # I am not responsible for any damage, data loss, or other issues that may result from the use of this script.
 
+#variable
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
+
 total_ram=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 ram=$(echo $total_ram / 1000 | bc) #in mb
 
@@ -150,12 +153,22 @@ for debload in "${Debloading__linux_mint[@]}"; do
 		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
 	fi
 done
-if [ "$Debloading__linux_mint__update_manager" == "1" ];then
-	#this code need to be checked. for echo edding row and all the other things its doing
+Debloading__update_manager(){
+	if ! grep -q '^Hidden=true' "$1"; then
+		if grep -q '^Hidden=' "$1"; then
+			sudo sed -i '/^Hidden=/d' "$1"
+		fi
+		echo "Hidden=true" | sudo tee -a "$1" > /dev/null && echo "update manager disabled on boot"
+	fi
+}
+if [ "$Debloading__linux_mint__update_manager__system" == "1" ];then
 	sudo chmod -x /usr/bin/mintupdate
-	mkdir -p ~/.config/autostart
-	cp /etc/xdg/autostart/mintupdate.desktop ~/.config/autostart/ #checking later
-	echo "Hidden=true" >> ~/.config/autostart/mintupdate.desktop && echo "update manager disabled on boot"
+	Debloading__update_manager "/etc/xdg/autostart/mintupdate.desktop"
+elif  [ "$Debloading__linux_mint__update_manager__user" == "1" ];then
+	new_path="$HOME/.config/autostart"
+	mkdir -p "$new_path"
+	cp /etc/xdg/autostart/mintupdate.desktop "$new_path"
+	Debloading__update_manager "$new_path/mintupdate.desktop"
 fi
 sudo apt autoremove
 
@@ -440,7 +453,6 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 
 #github repos
 if [[ "$script_main" == 1 || "$script_startup" == 1 ]];then
-	git_repo__thesupergiant__arch=1
 	git_repo__thesupergiant__linux_mint=1
 fi
 
