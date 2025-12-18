@@ -43,7 +43,9 @@ for function in "$function_sh" "$function_sh_mint";do
 	source <(echo "$function" | sed -E '/^alias / s/\\"/"/g' | sed -E 's/^alias ([^=]+)=["](.*)["]$/\1() {\n  \2\n}/')
 done
 
-pause
+#pause
+echo $SUDO_USER
+echo $LOGNAME
 
 ssu
 
