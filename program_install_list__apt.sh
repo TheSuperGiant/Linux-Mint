@@ -83,6 +83,7 @@ declare -a App_Install=(
 	"tigervnc:	tigervnc-viewer"
 	"torbrowser:	torbrowser-launcher"
 	"transmission:	transmission-gtk"
+	"thunar:	thunar"
 	"ufw:	ufw"
 	"vim:	vim"
 	"virt_viewer:	virt-viewer virtualbox-guest-additions-iso"

@@ -4,6 +4,9 @@
 # By using this script, you acknowledge that you do so at your own risk.
 # I am not responsible for any damage, data loss, or other issues that may result from the use of this script.
 
+#sudo without password
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/parts/without_password_startup.sh)
+
 #variable
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
 
@@ -127,6 +130,7 @@ declare -a Debloading__linux_mint=(
 	"image_viewer:	xviewer"
 	"library:	thingy"
 	"matrix:	mintchat"
+	"nemo:	nemo"
 	"notes:	sticky"
 	"onboard:	onboard"
 	"online_accounts:	gnome-online-accounts-gtk"
@@ -153,6 +157,7 @@ for debload in "${Debloading__linux_mint[@]}"; do
 		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
 	fi
 done
+box_sub "update manager"
 Debloading__update_manager(){
 	if ! grep -q '^Hidden=true' "$1"; then
 		if grep -q '^Hidden=' "$1"; then
@@ -170,7 +175,8 @@ elif  [ "$Debloading__linux_mint__update_manager__user" == "1" ];then
 	cp /etc/xdg/autostart/mintupdate.desktop "$new_path"
 	Debloading__update_manager "$new_path/mintupdate.desktop"
 fi
-sudo apt autoremove
+box_sub "Removing not used packages"
+sudo apt autoremove -y
 
 if [[ $files__linux_mint__background_images == "1" ]];then
 	sudo rm -r "/usr/share/backgrounds/linuxmint"
@@ -362,7 +368,8 @@ if [ "$App_Install__bluetooth" == "1" ];then
 	rm -rf ~/.pulse*
 fi
 if [ "$App_Install__docker" == "1" ];then
-	sudo usermod -aG docker $USER
+	#sudo usermod -aG docker $USER
+	sudo usermod -aG docker $SUDO_USER
 	restart=1
 fi
 if [ "$App_Install__notepadPlusPlus" == "1" ];then
