@@ -235,16 +235,9 @@ else
 fi
 #later testing i cannot do it now.
 if [[ $gpu == *"nvidia"* ]]; then
-    #echo "NVIDIA GPU detected"
+    echo "NVIDIA GPU detected"
 	#testing drivers check verstion to install
-	#sudo ubuntu-drivers autoinstall
-	nvidia_recommanded=$(ubuntu-drivers devices  2>/dev/null | grep recommended | awk '{print $3}')
-	nvidia_current=$(dpkg -l | grep nvidia-driver | awk '{print $2}')
-	#printf '%s\n' "$nvidia_recommanded"
-	#printf '%s\n' "$nvidia_current"
-	if [[ "$nvidia_recommanded" != "$nvidia_current" ]];then
-		sudo ubuntu-drivers autoinstall
-	fi
+	sudo ubuntu-drivers autoinstall
 elif [[ $gpu == *"AMD"* ]]; then
     echo "AMD GPU detected"
 	GPU_ID=$(lspci -nn | grep -i amd | awk '{print $6}' | tr -d '[]')
