@@ -12,6 +12,7 @@ declare -a App_Install=(
 	"bleachbit:	bleachbit"
 	"bluetooth:	linux-firmware pipewire pipewire-pulse pipewire-audio-client-libraries libspa-0.2-bluetooth"
 	"bulky:	bulky"
+	"btop:	btop"
 	"calibre:	calibre"
 	"celluloid:	celluloid"
 	"disk_usage_analyzer:	baobab"
