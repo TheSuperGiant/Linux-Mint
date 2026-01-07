@@ -93,7 +93,7 @@ done
 for alias in $(aliasi "$function_sh_mint"); do
 	alias_adding "$alias" "$function_sh_mint"
 done
-
+pause #tempory
 ubuntu_version_name=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
 
 case $ubuntu_version_name in
