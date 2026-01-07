@@ -10,9 +10,6 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 #variable
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
 
-total_ram=$(grep MemTotal /proc/meminfo | awk '{print $2}')
-ram=$(echo $total_ram / 1000 | bc) #in mb
-
 interface_name=$(ip route | awk '/^default/ {print $5}')
 
 http_check() {
@@ -55,25 +52,27 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 #special links
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/Special_link.sh)
 
-#function required 1
-if [[ $function__update == "1" ]];then 
-	function__ap="1"
-	function__github_program_updater="1"
-fi
-if [[ $function__github_program_updater == "1" ]];then
-	function__box_sub="1"
-fi
-if [[ $function__git_u == "1" ]];then
-	error="1"
-fi
+#functions needs
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_needs.sh)
+#declare -a required=(
+	#1
+	#"function__update:	ap github_program_updater"
+	#"function__github_program_updater:	box_sub"
+	#"function__git_u:	error"
+	#2
+	#"function__ap:	apt_fail"
+	#"function__box_sub:	box"
+#)
 
-#function required 2
-if [[ $function__ap == "1" ]];then
-	function__apt_fail="1"
-fi
-if [[ $function__box_sub == "1" ]];then
-	function__box="1"
-fi
+#for require in "${required[@]}"; do
+	#requiring="${require%%:*}"
+	#if [[ ${!requiring} == "1" ]];then
+		#req=$(echo "${require##*:}" | sed -E 's/^[[:space:]]+//')
+		#for re in ${req[@]}; do
+			#eval "function__$re=1"
+		#done
+	#fi
+#done
 
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions_arch.sh)
@@ -134,7 +133,7 @@ declare -a Debloading__linux_mint=(
 	"image_viewer:	xviewer"
 	"library:	thingy"
 	"matrix:	mintchat"
-	"nemo:	nemo"
+	#"nemo:	nemo"
 	"notes:	sticky"
 	"onboard:	onboard"
 	"online_accounts:	gnome-online-accounts-gtk"
@@ -144,6 +143,7 @@ declare -a Debloading__linux_mint=(
 	"rhythmbox:	rhythmbox"
 	"screenshot:	gnome-screenshot"
 	"software_manager:	mintinstall"
+	"system_monitor:	gnome-system-monitor"
 	"system_reports:	mintreport"
 	"text_editor:	xed"
 	"thunderbird_mail:	thunderbird"
@@ -201,12 +201,13 @@ tmp(){
 		restart=1
 	fi
 }
+ram__tmp__value=$(echo "$ram * 1.01" | bc | awk '{printf "%.0f\n", $0}') #in mb *1.01
 if [[ "$ram__tmp" == 1 ]];then
-	if [[ "$ram" -ge "32000" ]];then
+	if [[ "$ram__tmp__value" -ge "32000" ]];then
 		tmp 4G
-	elif [[ "$ram" -ge "16000" ]];then
+	elif [[ "$ram__tmp__value" -ge "16000" ]];then
 		tmp 2G
-	elif [[ "$ram" -ge "8000" ]];then
+	elif [[ "$ram__tmp__value" -ge "8000" ]];then
 		tmp 1G
 	fi
 fi
@@ -271,31 +272,33 @@ if [[ "$App_Install__hp_printer__on_decetion" == "1" ]];then
 		App_Install__hp_printer=1
 	fi
 fi
-if [ "$App_Install__keepass" == "1" ];then
-	App_Install__xdotool=1
-fi
-if [ "$App_Install__librewolf" == "1" ];then
-	App_Install__extrepo=1
-fi
-if [ "$App_Install__notepadPlusPlus" == "1" ];then
-	App_Install__wine=1
-	App_Install__jq=1
-fi
+
+declare -a install_needed=(
+	"App_Install__keepass:	xdotool"
+	"App_Install__librewolf:	extrepo"
+	"App_Install__notepadPlusPlus:	wine jq"
+	"App_Install__winboat:	docker flatpak"
+	"script_main:	git"
+)
+
+for needs in "${install_needed[@]}"; do
+	needing="${needs%%:*}"
+	if [[ ${!needing} == "1" ]];then
+		need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
+		for n in ${need[@]}; do
+			eval "App_Install__$n=1"
+		done
+	fi
+done
+
 if [ "$App_Install__winboat" == "1" ];then
-	App_Install__docker=1
-	App_Install__flatpak=1
 	restart=1
-fi
-if [ "$script_main" == "1" ];then
-	App_Install__git=1
 fi
 
 #before 2
 if [[ $App_Install__snap == "1" ]] && ! command -v snap > /dev/null;then
 	sudo rm /etc/apt/preferences.d/nosnap.pref
 fi
-
-
 
 if [ "$App_Install__extrepo" == "1" ];then
 	sudo apt install extrepo -y
@@ -342,6 +345,17 @@ box_part "Installing programs"
 
 sudo apt update
 
+if [ "$App_Install__pcloud" == "1" ];then
+	#ensure that the browser is downloading to folder ~/Downloads
+	xdg-open "https://www.pcloud.com/how-to-install-pcloud-drive-linux.html?download=electron-64"
+	
+	if [ "$(echo "$ubuntu_ver >= 24.04" | bc -l 2>/dev/null)" = "1" ]; then
+		sudo apt install libfuse2t64 -y
+	elif [ "$(echo "$ubuntu_ver < 24.04" | bc -l 2>/dev/null)" = "1" ]; then
+		sudo apt install libfuse2 -y
+	fi
+fi
+
 #apt install
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
@@ -384,23 +398,11 @@ if [ "$App_Install__notepadPlusPlus" == "1" ];then
 		box_sub "notepad++"
 		url=$(wget -qO- https://api.github.com/repos/notepad-plus-plus/notepad-plus-plus/releases/latest | grep "browser_download_url" | grep -oP "\"browser_download_url\": \"\K[^\"]*x64.exe\"" | sed 's/"$//')
 		wget -O ~/Downloads/npp-latest-installer.exe "$url"
-		wine ~/Downloads/npp-latest-installer.exe
+		wine ~/Downloads/npp-latest-installer.exe /S
 	fi
 fi
 if [ "$App_Install__pcloud" == "1" ];then
-	#ensure that the browser is downloading to folder ~/Downloads
-	xdg-open "https://www.pcloud.com/how-to-install-pcloud-drive-linux.html?download=electron-64"
-	
-	if [ "$(echo "$ubuntu_ver >= 24.04" | bc -l 2>/dev/null)" = "1" ]; then
-		sudo apt install libfuse2t64 -y
-	elif [ "$(echo "$ubuntu_ver < 24.04" | bc -l 2>/dev/null)" = "1" ]; then
-		sudo apt install libfuse2 -y
-	fi
-	
-	#after that
-	
-	#chmod +x ~/Downloads/pcloud
-	#~/Downloads/pcloud &
+	chmod +x ~/Downloads/pcloud
 fi
 
 #flatpak list

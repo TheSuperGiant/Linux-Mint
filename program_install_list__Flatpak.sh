@@ -18,11 +18,12 @@ declare -a App_Install=(
 	"opera:	com.opera.Opera"
 	"peazip:	io.github.peazip.PeaZip"
 	"pinta:	com.github.PintaProject.Pinta"
+	"proton_vpn:	com.protonvpn.www"
 	"signal:	org.signal.Signal"
 	"teamspeak:	com.teamspeak.TeamSpeak"
 	"visual_studio_code:	com.visualstudio.code"
 	#"vivaldi:	com.vivaldi.Vivaldi"
-	#"waterfox:	net.waterfox.waterfox"
+	"waterfox:	net.waterfox.waterfox"
 	"winboat:	$FreeRDP"
 	"wire:	com.wire.WireDesktop"
 )
