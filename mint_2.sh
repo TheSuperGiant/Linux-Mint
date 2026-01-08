@@ -6,7 +6,7 @@
 
 #sudo without password
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/without_password_startup.sh)
-
+ 
 #variable
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
 
@@ -53,27 +53,10 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/Special_link.sh)
 
 #functions needs
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_needs.sh)
-#declare -a required=(
-	#1
-	#"function__update:	ap github_program_updater"
-	#"function__github_program_updater:	box_sub"
-	#"function__git_u:	error"
-	#2
-	#"function__ap:	apt_fail"
-	#"function__box_sub:	box"
-#)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_needs__list.sh)
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Mint/refs/heads/main/parts/functions_needs__list.sh)
 
-#for require in "${required[@]}"; do
-	#requiring="${require%%:*}"
-	#if [[ ${!requiring} == "1" ]];then
-		#req=$(echo "${require##*:}" | sed -E 's/^[[:space:]]+//')
-		#for re in ${req[@]}; do
-			#eval "function__$re=1"
-		#done
-	#fi
-#done
-
+#functions + alias adding
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions_arch.sh)
 for function in $(functi "$function_sh"); do
@@ -93,7 +76,7 @@ done
 for alias in $(aliasi "$function_sh_mint"); do
 	alias_adding "$alias" "$function_sh_mint"
 done
-pause #tempory
+
 ubuntu_version_name=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
 
 case $ubuntu_version_name in
