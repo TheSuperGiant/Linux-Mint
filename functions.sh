@@ -45,7 +45,7 @@ apt_fail(){
 	done
 }
 github_program_updater(){
-	#error_text_color() { #tempory code
+	#error() { #tempory code
 		#printf "\e[1;91m\n\n$1\e[0m\n\n" #tempory code
 	#} #tempory code
 	#error_default() {
@@ -140,7 +140,7 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
 	local json_url=$(wget -qO- $url)
 	if [[ -z "$repo" && -z "$user" ]];then
 		help_text
-		error_text_color "--repo (-r) and --user (-u) are required"
+		error "--repo (-r) and --user (-u) are required"
 		return
 	fi
 	if [[ "$json" == 1 ]];then
@@ -162,7 +162,7 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
 	fi
 	if [[ "$online_version" != "$installed_version" ]];then
 		if [[ "${url##*.}" != "deb" ]];then
-			error_text_color "only .deb file supported"
+			error "only .deb file supported"
 			printf '%s\n' "url: $url"
 			return
 		fi
