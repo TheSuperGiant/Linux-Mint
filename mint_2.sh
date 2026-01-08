@@ -53,8 +53,8 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/Special_link.sh)
 
 #functions needs
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/parts/functions_needs__list.sh)
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_needs__list.sh)
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Mint/refs/heads/main/parts/functions_needs__list.sh)
 
 #functions + alias adding
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)

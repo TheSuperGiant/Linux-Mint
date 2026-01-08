@@ -45,10 +45,9 @@ apt_fail(){
 	done
 }
 github_program_updater(){
-	#error() { #tempory code
-		#printf "\e[1;91m\n\n$1\e[0m\n\n" #tempory code
-	#} #tempory code
-	#error_default() {
+	error_default(){
+		error "\n\n$1\n"
+	}
 	help_text() {
 		echo "github program updater
 		
@@ -73,11 +72,11 @@ parameters (view variable value)
 	
 
 example:
-github_program_updater -r \"qwerty\" -u \"keyboard\"
-github_program_updater -r \"qwerty\" -u \"keyboard\" -s \"qwerty.*x86_64.*\" -R \"1\" -o \" \" -i\" \"
-github_program_updater -r \"qwerty\" -u \"keyboard\" -I
-github_program_updater -r \"qwerty\" -u \"keyboard\" -j
-github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
+github_program_updater -r \"repo\" -u \"user\"
+github_program_updater -r \"repo\" -u \"user\" -s \"repo.*x86_64.*\" -R \"1\" -o \" \" -i\" \"
+github_program_updater -r \"repo\" -u \"user\" -I
+github_program_updater -r \"repo\" -u \"user\" -j
+github_program_updater -r \"repo\" -u \"user\" -U"
 	}
 	if [[ $# == 0 ]] || printf '%s\n' "$@" | grep -qE '^-(h|help)$|^--help$'; then
 		help_text
@@ -140,7 +139,7 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
 	local json_url=$(wget -qO- $url)
 	if [[ -z "$repo" && -z "$user" ]];then
 		help_text
-		error "--repo (-r) and --user (-u) are required"
+		error_default "--repo (-r) and --user (-u) are required"
 		return
 	fi
 	if [[ "$json" == 1 ]];then
@@ -162,7 +161,7 @@ github_program_updater -r \"qwerty\" -u \"keyboard\" -U"
 	fi
 	if [[ "$online_version" != "$installed_version" ]];then
 		if [[ "${url##*.}" != "deb" ]];then
-			error "only .deb file supported"
+			error_default "only .deb file supported"
 			printf '%s\n' "url: $url"
 			return
 		fi
