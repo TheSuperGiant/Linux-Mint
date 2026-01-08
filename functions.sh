@@ -45,9 +45,9 @@ apt_fail(){
 	done
 }
 github_program_updater(){
-	error_text_color() { #tempory code
-		printf "\e[1;91m\n\n$1\e[0m\n\n" #tempory code
-	} #tempory code
+	#error_text_color() { #tempory code
+		#printf "\e[1;91m\n\n$1\e[0m\n\n" #tempory code
+	#} #tempory code
 	#error_default() {
 	help_text() {
 		echo "github program updater
