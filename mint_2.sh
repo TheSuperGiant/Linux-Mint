@@ -225,6 +225,9 @@ if [[ $gpu == *"nvidia"* ]]; then
 	if [[ "$nvidia_recommanded" != "$nvidia_current" ]];then
 		sudo ubuntu-drivers autoinstall
 	fi
+	#if [[ $gpu_default == "nvidia" ]];then
+		#sudo prime-select nvidia
+	#fi
 elif [[ $gpu == *"AMD"* ]]; then
     echo "AMD GPU detected"
 	GPU_ID=$(lspci -nn | grep -i amd | awk '{print $6}' | tr -d '[]')
@@ -358,7 +361,7 @@ fi
 	#apt install git build-essential -y
 	#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	#echo >> /home/giant/.bashrc
-   # echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/giant/.bashrc
+    #echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/giant/.bashrc
     #eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 #fi
 
