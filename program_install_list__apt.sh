@@ -7,10 +7,10 @@ declare -a App_Install=(
 	"adwaita_theme:	adwaita-icon-theme"
 	"audacity:	audacity"
 	"backup_tool:	mintbackup"
-	"biglybt:	biglybt default-jre libgtk-3-dev libswt-gtk-4-java" #ai local asking if better to set it in flatpak
+	#"biglybt:	biglybt default-jre libgtk-3-dev libswt-gtk-4-java" #ai local asking if better to set it in flatpak
 	"brave:	brave-browser curl"
 	"bleachbit:	bleachbit"
-	"bluetooth:	linux-firmware pipewire pipewire-pulse pipewire-audio-client-libraries libspa-0.2-bluetooth"
+	"bluetooth:	blueman bluetooth bluez bluez-tools linux-firmware pipewire pipewire-pulse pipewire-audio-client-libraries libspa-0.2-bluetooth"
 	"bulky:	bulky"
 	"btop:	btop"
 	"calibre:	calibre"
@@ -72,7 +72,7 @@ declare -a App_Install=(
 	"pidgin:	pidgin"
 	"pix:	pix"
 	"qbittorrent:	qbittorrent"
-	"qemu:	qemu-system"
+	"qemu:	qemu-kvm libvirt-daemon-system libvirt-clients virt-viewer"
 	"rhythmbox:	rhythmbox"
 	"scrcpy:	scrcpy"
 	"seahorse:	seahorse"

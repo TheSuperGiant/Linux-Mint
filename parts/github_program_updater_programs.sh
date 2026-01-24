@@ -4,7 +4,7 @@ declare -a github_program_updater_programs=(
 	"thorium:	Alex313031; thorium; -s;thorium-browser.*; -R;1"
 	"winboat:	tibixdev; winboat"
 )
-github_program_updater_programs(){
+github_program_updater_programs() {
 	for github_program in "${github_program_updater_programs[@]}"; do
 		program_name="${github_program%%:*}"
 		prameters="${github_program##*:}"

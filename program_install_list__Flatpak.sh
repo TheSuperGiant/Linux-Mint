@@ -3,6 +3,7 @@ FreeRDP="com.freerdp.FreeRDP"
 declare -a App_Install=(
 	"flathub:	flathub"
 	"anydesk:	com.anydesk.Anydesk"
+	"biglybt:	om.biglybt.BiglyBT"
 	#"brave:	com.brave.Browser"
 	"discord:	com.discordapp.Discord"
 	#"element:	im.riot.Riot"

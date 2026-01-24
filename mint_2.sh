@@ -6,14 +6,14 @@
 
 #sudo without password
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/without_password_startup.sh)
- 
+
 #variable
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
 
 interface_name=$(ip route | awk '/^default/ {print $5}')
 
 http_check() {
-	if [[ "$1" == *"http"* ]];then
+	if [[ "$1" == *"http"* ]]; then
 		source <(curl -s -L $1)
 	else
 		source $1
@@ -30,7 +30,7 @@ function_sh_mint=$(curl -s "https://raw.githubusercontent.com/TheSuperGiant/Linu
 
 
 
-for function in "$function_sh" "$function_sh_mint";do
+for function in "$function_sh" "$function_sh_mint"; do
 	while IFS= read -r line; do
 		if [[ "$line" == alias* ]]; then
 			alias=$(echo "$line" | cut -d' ' -f2 | cut -d'=' -f1)
@@ -60,7 +60,7 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions_arch.sh)
 for function in $(functi "$function_sh"); do
-	if [[ "$(eval echo \${function__arch__$function})" == "1" ]];then
+	if [[ "$(eval echo \${function__arch__$function})" == "1" ]]; then
 		function_adding "$function" "$function_sh"
 	fi
 done
@@ -69,7 +69,7 @@ for function in $(functi "$function_sh_mint"); do
 done
 
 for alias in $(aliasi "$function_sh"); do
-	if [[ "$(eval echo \${function__arch__$alias})" == "1" ]];then
+	if [[ "$(eval echo \${function__arch__$alias})" == "1" ]]; then
 		alias_adding "$alias" "$function_sh"
 	fi
 done
@@ -80,11 +80,11 @@ done
 ubuntu_version_name=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
 
 case $ubuntu_version_name in
-  bionic) ubuntu_ver="18.04" ;;
-  focal)  ubuntu_ver="20.04" ;;
-  jammy)  ubuntu_ver="22.04" ;;
-  noble)  ubuntu_ver="24.04" ;;
-  *) ubuntu_ver="Unknown" ;;
+	bionic) ubuntu_ver="18.04" ;;
+	focal)  ubuntu_ver="20.04" ;;
+	jammy)  ubuntu_ver="22.04" ;;
+	noble)  ubuntu_ver="24.04" ;;
+	*) ubuntu_ver="Unknown" ;;
 esac
 #ubuntu_ver is the version of ubuntu in it.
 
@@ -97,7 +97,7 @@ sudo apt update
 
 box_part "Debloading"
 
-if ! [[ "$Debloading__linux_mint__usb_image_writer" == "1" && "$Debloading__linux_mint__usb_stick_formatter" == "1" ]];then
+if ! [[ "$Debloading__linux_mint__usb_image_writer" == "1" && "$Debloading__linux_mint__usb_stick_formatter" == "1" ]]; then
 	Debloading__linux_mint__usb_image_writer=0
 fi
 
@@ -139,13 +139,13 @@ declare -a Debloading__linux_mint=(
 
 for debload in "${Debloading__linux_mint[@]}"; do
 	program_name="${debload%%:*}"
-	if [ "$(eval echo   \$Debloading__linux_mint__$program_name)" == "1" ]; then
+	if [[ "$(eval echo   \$Debloading__linux_mint__$program_name)" == "1" ]]; then
 		apt_name=$(echo "${debload##*:}" | sed -E 's/^[[:space:]]+//')
 		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
 	fi
 done
 box_sub "update manager"
-Debloading__update_manager(){
+Debloading__update_manager() {
 	if ! grep -q '^Hidden=true' "$1"; then
 		if grep -q '^Hidden=' "$1"; then
 			sudo sed -i '/^Hidden=/d' "$1"
@@ -153,10 +153,10 @@ Debloading__update_manager(){
 		echo "Hidden=true" | sudo tee -a "$1" > /dev/null && echo "update manager disabled on boot"
 	fi
 }
-if [ "$Debloading__linux_mint__update_manager__system" == "1" ];then
+if [[ "$Debloading__linux_mint__update_manager__system" == "1" ]]; then
 	sudo chmod -x /usr/bin/mintupdate
 	Debloading__update_manager "/etc/xdg/autostart/mintupdate.desktop"
-elif  [ "$Debloading__linux_mint__update_manager__user" == "1" ];then
+elif  [[ "$Debloading__linux_mint__update_manager__user" == "1" ]]; then
 	new_path="$HOME/.config/autostart"
 	mkdir -p "$new_path"
 	cp /etc/xdg/autostart/mintupdate.desktop "$new_path"
@@ -165,7 +165,7 @@ fi
 box_sub "Removing not used packages"
 sudo apt autoremove -y
 
-if [[ $files__linux_mint__background_images == "1" ]];then
+if [[ $files__linux_mint__background_images == "1" ]]; then
 	sudo rm -r "/usr/share/backgrounds/linuxmint"
 	sudo rm -r "/usr/share/backgrounds/linuxmint-wallpapers"
 fi
@@ -173,11 +173,11 @@ fi
 #add_device_label
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/add_device_label.sh)
 
-tmp(){
+tmp() {
 	local new_value="tmpfs  /tmp  tmpfs  size=$1,mode=1777  0  0"
 	if ! sudo grep -q "$new_value" /etc/fstab; then
 		local old_value=$(grep "/tmp" /etc/fstab)
-		if [[ "$old_value" != "" ]];then
+		if [[ "$old_value" != "" ]]; then
 			sudo sed -i "\|$old_value|d" /etc/fstab
 		fi
 		sudo bash -c "echo \"$new_value\" >> /etc/fstab" && echo "\tmp moved to ram size set '$1' + added /etc/fstab"
@@ -185,12 +185,12 @@ tmp(){
 	fi
 }
 ram__tmp__value=$(echo "$ram * 1.01" | bc | awk '{printf "%.0f\n", $0}') #in mb *1.01
-if [[ "$ram__tmp" == 1 ]];then
-	if [[ "$ram__tmp__value" -ge "32000" ]];then
+if [[ "$ram__tmp" == 1 ]]; then
+	if [[ "$ram__tmp__value" -ge "32000" ]]; then
 		tmp 4G
-	elif [[ "$ram__tmp__value" -ge "16000" ]];then
+	elif [[ "$ram__tmp__value" -ge "16000" ]]; then
 		tmp 2G
-	elif [[ "$ram__tmp__value" -ge "8000" ]];then
+	elif [[ "$ram__tmp__value" -ge "8000" ]]; then
 		tmp 1G
 	fi
 fi
@@ -222,10 +222,10 @@ if [[ $gpu == *"nvidia"* ]]; then
 	#nvidia is working well i think
 	nvidia_recommanded=$(ubuntu-drivers devices  2>/dev/null | grep recommended | awk '{print $3}')
 	nvidia_current=$(dpkg -l | grep nvidia-driver | awk '{print $2}')
-	if [[ "$nvidia_recommanded" != "$nvidia_current" ]];then
+	if [[ "$nvidia_recommanded" != "$nvidia_current" ]]; then
 		sudo ubuntu-drivers autoinstall
 	fi
-	#if [[ $gpu_default == "nvidia" ]];then
+	#if [[ $gpu_default == "nvidia" ]]; then
 		#sudo prime-select nvidia
 	#fi
 elif [[ $gpu == *"AMD"* ]]; then
@@ -246,15 +246,15 @@ fi
 #drivers
 
 #before 1
-if [ "$Firewall__Default" == "1" ];then
+if [[ "$Firewall__Default" == "1" ]]; then
 	App_Install__ufw=1
-	if [ "$firewall_Recommanded_rules" == "1" ];then
+	if [[ "$firewall_Recommanded_rules" == "1" ]]; then
 		App_Install__fail2ban=1
 	fi
 fi
-if [[ "$App_Install__hp_printer__on_decetion" == "1" ]];then
+if [[ "$App_Install__hp_printer__on_decetion" == "1" ]]; then
 	hp=$(lpinfo -v | grep -Ei "direct hp:/|direct hpfax:/|network dnssd://HP|network ipp://HP|network ipps://HP")
-	if [[ -n $hp ]];then
+	if [[ -n $hp ]]; then
 		App_Install__hp_printer=1
 	fi
 fi
@@ -269,7 +269,7 @@ declare -a install_needed=(
 
 for needs in "${install_needed[@]}"; do
 	needing="${needs%%:*}"
-	if [[ ${!needing} == "1" ]];then
+	if [[ ${!needing} == "1" ]]; then
 		need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
 		for n in ${need[@]}; do
 			eval "App_Install__$n=1"
@@ -277,16 +277,17 @@ for needs in "${install_needed[@]}"; do
 	fi
 done
 
-if [ "$App_Install__winboat" == "1" ];then
-	restart=1
-fi
+#if [ "$App_Install__winboat" == "1" ]; then
+	#check if still needed.
+	#restart=1
+#fi
 
 #before 2
-if [[ $App_Install__snap == "1" ]] && ! command -v snap > /dev/null;then
+if [[ $App_Install__snap == "1" ]] && ! command -v snap > /dev/null; then
 	sudo rm /etc/apt/preferences.d/nosnap.pref
 fi
 
-if [ "$App_Install__extrepo" == "1" ];then
+if [[ "$App_Install__extrepo" == "1" ]]; then
 	sudo apt install extrepo -y
 fi
 
@@ -310,19 +311,19 @@ declare -a apt_addrepo_programs=(
 )
 for apt_addrepo_program in "${apt_addrepo_programs[@]}"; do
 	IFS=';' read -ra apt_addrepo_parts <<< "${apt_addrepo_program}"
-	if [ "$(eval echo \$App_Install__${apt_addrepo_parts[0]})" == "1" ]; then
+	if [[ "$(eval echo \$App_Install__${apt_addrepo_parts[[0 ]]})" == "1" ]]; then
 		echo "${apt_addrepo_parts[0]}"
-		for i in "${!apt_addrepo_parts[@]}"; do	
+		for i in "${!apt_addrepo_parts[@]}"; do
 			apt_addrepo_parts[$i]="${apt_addrepo_parts[$i]#"${apt_addrepo_parts[$i]%%[! $'\t']*}"}"
 		done
 		apt_addrepo "${apt_addrepo_parts[1]}" "${apt_addrepo_parts[2]}" "${apt_addrepo_parts[3]}"
 	fi
 done
 
-if [ "$App_Install__librewolf" == "1" ];then
+if [[ "$App_Install__librewolf" == "1" ]]; then
 	sudo extrepo enable librewolf
 fi
-if [[ "$App_Install__waydroid" == "1" ]] && ! command -v waydroid >/dev/null 2>&1;then
+if [[ "$App_Install__waydroid" == "1" ]] && ! command -v waydroid >/dev/null 2>&1; then
 	curl https://repo.waydro.id | sudo bash
 fi
 
@@ -331,13 +332,13 @@ box_part "Installing programs"
 
 sudo apt update
 
-if [ "$App_Install__pcloud" == "1" ];then
+if [[ "$App_Install__pcloud" == "1" ]]; then
 	#ensure that the browser is downloading to folder ~/Downloads
 	xdg-open "https://www.pcloud.com/how-to-install-pcloud-drive-linux.html?download=electron-64"
-	
-	if [ "$(echo "$ubuntu_ver >= 24.04" | bc -l 2>/dev/null)" = "1" ]; then
+
+	if [[ "$(echo "$ubuntu_ver >= 24.04" | bc -l 2>/dev/null)" = "1" ]]; then
 		sudo apt install libfuse2t64 -y
-	elif [ "$(echo "$ubuntu_ver < 24.04" | bc -l 2>/dev/null)" = "1" ]; then
+	elif [[ "$(echo "$ubuntu_ver < 24.04" | bc -l 2>/dev/null)" = "1" ]]; then
 		sudo apt install libfuse2 -y
 	fi
 fi
@@ -346,18 +347,18 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
-	if [ "$(eval echo \$App_Install__$key)" == "1" ];then
+	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		apt install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi
 done
 
 #after1
-if [ "$App_Install__flatpak" == "1" ];then
+if [[ "$App_Install__flatpak" == "1" ]]; then
     flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 fi
 
-#if [ "$App_Install__brew" == "1" ];then
+#if [ "$App_Install__brew" == "1" ]; then
 	#apt install git build-essential -y
 	#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	#echo >> /home/giant/.bashrc
@@ -367,27 +368,29 @@ fi
 
 #after2
 
-if [ "$App_Install__bluetooth" == "1" ];then
+if [[ "$App_Install__bluetooth" == "1" ]]; then
 	systemctl --user --stop pulseaudio
 	systemctl --user --disable pulseaudio
 	systemctl --user --replace pipewire pipewire-pulse
 	rm -rf ~/.config/pulse
 	rm -rf ~/.pulse*
 fi
-if [ "$App_Install__docker" == "1" ];then
-	#sudo usermod -aG docker $USER
-	sudo usermod -aG docker $SUDO_USER
-	restart=1
+if [[ "$App_Install__docker" == "1" ]]; then
+	if ! groups | grep -q '\bdocker\b'; then
+		#sudo usermod -aG docker $USER
+		sudo usermod -aG docker $SUDO_USER
+		restart=1
+	fi
 fi
-if [ "$App_Install__notepadPlusPlus" == "1" ];then
-	if ! [ -f "$HOME/.wine/drive_c/Program Files/Notepad++/notepad++.exe" ]; then
+if [[ "$App_Install__notepadPlusPlus" == "1" ]]; then
+	if ! [[ -f "$HOME/.wine/drive_c/Program Files/Notepad++/notepad++.exe" ]]; then
 		box_sub "notepad++"
 		url=$(wget -qO- https://api.github.com/repos/notepad-plus-plus/notepad-plus-plus/releases/latest | grep "browser_download_url" | grep -oP "\"browser_download_url\": \"\K[^\"]*x64.exe\"" | sed 's/"$//')
 		wget -O ~/Downloads/npp-latest-installer.exe "$url"
 		wine ~/Downloads/npp-latest-installer.exe /S
 	fi
 fi
-if [ "$App_Install__pcloud" == "1" ];then
+if [[ "$App_Install__pcloud" == "1" ]]; then
 	chmod +x ~/Downloads/pcloud
 fi
 
@@ -395,21 +398,30 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__Flatpak.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
-	if [ "$(eval echo \$App_Install__$key)" == "1" ];then
+	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		flatpak install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi
 done
 
-if [ "$App_Install__losslesscut" == "1" ];then
+if [[ "$App_Install__losslesscut" == "1" ]]; then
 	flatpak override --user --filesystem=home no.mifi.losslesscut
 fi
-if [ "$App_Install__virtualbox" == "1" ];then
+if [[ "$App_Install__qemu" == "1" ]]; then
+	sudo systemctl enable libvirtd
+	sudo systemctl start libvirtd
+	if ! groups | grep -q '\blibvirt\b'; then
+		sudo usermod -aG libvirt,kvm $SUDO_USER
+		#sudo usermod -aG libvirt,kvm $USER
+		restart=1
+	fi
+fi
+if [[ "$App_Install__virtualbox" == "1" ]]; then
 	sudo systemctl stop libvirtd
 	sudo modprobe -r kvm_amd
 	echo "blacklist kvm_amd" | sudo tee /etc/modprobe.d/blacklist-kvm.conf
 fi
-if [ "$game_dependencies" == "1" ];then
+if [[ "$game_dependencies" == "1" ]]; then
 	#this must be still tested
 	sudo apt install python3-pyqt5 python3-pip git pipx -y
 	sudo pipx ensurepath
@@ -427,26 +439,26 @@ github_program_updater_programs
 
 box_part "Secutity settings"
 
-if [ "$Firewall__Default" == "1" ];then
+if [[ "$Firewall__Default" == "1" ]]; then
 	sudo ufw enable
-	if [ "$firewall_Recommanded_rules" == "1" ];then
+	if [[ "$firewall_Recommanded_rules" == "1" ]]; then
 		sudo ufw default deny incoming
 		sudo ufw default allow outgoing
 		#sudo systemctl enable --now fail2ban
 	fi
-	
-	if [[ "$App_Install__waydroid" == "1" ]];then
+
+	if [[ "$App_Install__waydroid" == "1" ]]; then
 		sudo ufw allow in on waydroid0
 		sudo ufw allow out on waydroid0
 		#building in function later that it can add row of code in it if needed for some programs
 		#sudo nano /etc/ufw/before.rules
 		#under this
 		# End required lines
-		#-A FORWARD -i waydroid0 -o $interface_name -j ACCEPT 
+		#-A FORWARD -i waydroid0 -o $interface_name -j ACCEPT
 		#-A FORWARD -i $interface_name -o waydroid0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 		#sudo ufw reload #maby adding this after file eddit to automatic reload.
-		
-		
+
+
 		#restart=1 #only needed if ufw reload does not go to add in the g_firewall function
 	fi
 fi
@@ -455,21 +467,21 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
 #github repos
-if [[ "$script_main" == 1 || "$script_startup" == 1 ]];then
+if [[ "$script_main" == 1 || "$script_startup" == 1 ]]; then
 	git_repo__thesupergiant__linux_mint=1
 fi
 
 #github updater
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/github_git_repo.sh)
 
-if [[ "$App_Install__waydroid" == "1" ]];then
+if [[ "$App_Install__waydroid" == "1" ]]; then
 	#list based on variable.
 	sudo waydroid init -s GAPPS
 	sudo modprobe binder_linux
 	sudo modprobe ashmem_linux
 fi
 
-if [[ "$restart" == "1" ]];then
+if [[ "$restart" == "1" ]]; then
 	r="restart required"
 	echo -e "\n\n\n"
 	echo -e "\e[1;93m$r\e[0m"

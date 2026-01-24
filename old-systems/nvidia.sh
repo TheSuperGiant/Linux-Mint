@@ -5,4 +5,3 @@ blacklist nvidia_drm
 blacklist nvidia_uvm
 blacklist nvidiafb
 EOF
-
