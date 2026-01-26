@@ -210,12 +210,12 @@ box_part "installing video drivers"
 #check the hole dirver part
 #gpu=$(inxi -G | grep -i "gpu:" | grep -oE "AMD|NVIDIA|Intel|ASPEED")
 if lsmod | grep -qE "nvidia|nouveau"; then
-    gpu="nvidia"
+	gpu="nvidia"
 else
-    # fallback to AMD or Intel detection
-    cpu_vendor=$(lscpu | grep 'Vendor ID' | awk '{print $3}')
-    gpu=$(lspci | grep -E "VGA|3D" | grep -oE "AMD|Intel|ASPEED" | grep -v "$cpu_vendor" | head -n1)
-    gpu=${gpu:-$(lspci | grep -E "VGA|3D" | grep -oE "Intel|AMD|ASPEED" | head -n1)}
+	# fallback to AMD or Intel detection
+	cpu_vendor=$(lscpu | grep 'Vendor ID' | awk '{print $3}')
+	gpu=$(lspci | grep -E "VGA|3D" | grep -oE "AMD|Intel|ASPEED" | grep -v "$cpu_vendor" | head -n1)
+	gpu=${gpu:-$(lspci | grep -E "VGA|3D" | grep -oE "Intel|AMD|ASPEED" | head -n1)}
 fi
 #later testing i cannot do it now.
 if [[ $gpu == *"nvidia"* ]]; then
@@ -229,7 +229,7 @@ if [[ $gpu == *"nvidia"* ]]; then
 		#sudo prime-select nvidia
 	#fi
 elif [[ $gpu == *"AMD"* ]]; then
-    echo "AMD GPU detected"
+	echo "AMD GPU detected"
 	GPU_ID=$(lspci -nn | grep -i amd | awk '{print $6}' | tr -d '[]')
 	if modinfo amdgpu | grep -q "$GPU_ID"; then
 		echo "Use amdgpu"
@@ -237,11 +237,11 @@ elif [[ $gpu == *"AMD"* ]]; then
 		echo "Use legacy radeon"
 	fi
 elif [[ $gpu == *"Intel"* ]]; then
-    echo "Intel GPU detected"
+	echo "Intel GPU detected"
 elif [[ $gpu == *"ASPEED"* ]]; then
-    echo "ASPEED GPU detected"
+	echo "ASPEED GPU detected"
 else
-    echo "No known GPU detected"
+	echo "No known GPU detected"
 fi
 #drivers
 
@@ -311,7 +311,7 @@ declare -a apt_addrepo_programs=(
 )
 for apt_addrepo_program in "${apt_addrepo_programs[@]}"; do
 	IFS=';' read -ra apt_addrepo_parts <<< "${apt_addrepo_program}"
-	if [ "$(eval echo \$App_Install__${apt_addrepo_parts[0]})" == "1" ]; then
+	if [[ "$(eval echo \$App_Install__${apt_addrepo_parts[0]})" == "1" ]]; then
 		echo "${apt_addrepo_parts[0]}"
 		for i in "${!apt_addrepo_parts[@]}"; do
 			apt_addrepo_parts[$i]="${apt_addrepo_parts[$i]#"${apt_addrepo_parts[$i]%%[! $'\t']*}"}"
@@ -355,15 +355,15 @@ done
 
 #after1
 if [[ "$App_Install__flatpak" == "1" ]]; then
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+	flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 fi
 
 #if [ "$App_Install__brew" == "1" ]; then
 	#apt install git build-essential -y
 	#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	#echo >> /home/giant/.bashrc
-    #echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/giant/.bashrc
-    #eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+	#echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/giant/.bashrc
+	#eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 #fi
 
 #after2
