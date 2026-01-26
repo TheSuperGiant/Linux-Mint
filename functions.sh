@@ -27,7 +27,7 @@ apt_addrepo() {
 apt_fail() {
 	while [[ $dpkg_error != "0" ]]; do
 		while IFS= read -r line1; do
-			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([[0-9 ]]+\)"; then
+			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
 				local dpkg_error=1
 			fi

@@ -311,7 +311,7 @@ declare -a apt_addrepo_programs=(
 )
 for apt_addrepo_program in "${apt_addrepo_programs[@]}"; do
 	IFS=';' read -ra apt_addrepo_parts <<< "${apt_addrepo_program}"
-	if [[ "$(eval echo \$App_Install__${apt_addrepo_parts[[0 ]]})" == "1" ]]; then
+	if [ "$(eval echo \$App_Install__${apt_addrepo_parts[0]})" == "1" ]; then
 		echo "${apt_addrepo_parts[0]}"
 		for i in "${!apt_addrepo_parts[@]}"; do
 			apt_addrepo_parts[$i]="${apt_addrepo_parts[$i]#"${apt_addrepo_parts[$i]%%[! $'\t']*}"}"
