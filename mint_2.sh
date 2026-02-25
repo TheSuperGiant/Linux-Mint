@@ -156,7 +156,7 @@ Debloading__update_manager() {
 if [[ "$Debloading__linux_mint__update_manager__system" == "1" ]]; then
 	sudo chmod -x /usr/bin/mintupdate
 	Debloading__update_manager "/etc/xdg/autostart/mintupdate.desktop"
-elif  [[ "$Debloading__linux_mint__update_manager__user" == "1" ]]; then
+elif [[ "$Debloading__linux_mint__update_manager__user" == "1" ]]; then
 	new_path="$HOME/.config/autostart"
 	mkdir -p "$new_path"
 	cp /etc/xdg/autostart/mintupdate.desktop "$new_path"
@@ -466,6 +466,9 @@ fi
 #settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
+#Flatpak app settings
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/flatpak_app_settings.sh)
+
 #github repos
 if [[ "$script_main" == 1 || "$script_startup" == 1 ]]; then
 	git_repo__thesupergiant__linux_mint=1
@@ -487,3 +490,5 @@ if [[ "$restart" == "1" ]]; then
 	echo -e "\e[1;93m$r\e[0m"
 	echo -e "\n\n\n"
 fi
+
+#after personal user file can add itself code.

@@ -21,6 +21,7 @@ function__arch__dcor=1
 function__arch__dcow=1
 function__arch__error=1
 function__arch__ext4setup=1
+function__arch__flat=1
 function__arch__git_config=1
 function__arch__git_u=1
 function__arch__git_update=1

@@ -53,7 +53,7 @@ declare -a App_Install=(
 	"libreoffice:	libreoffice"
 	"librewolf:	librewolf"
 	"megasync:	megasync"
-	"minecraft_server:	openjdk-21-jre-headless openjdk-21-jdk-headless"
+	"minecraft_server:	openjdk-21-jre-headless openjdk-21-jdk-headless" #java maby not needed anymore
 	"mintchat:	mintchat"
 	"mousepad:	mousepad"
 	"mpv_Media_player:	mpv"
