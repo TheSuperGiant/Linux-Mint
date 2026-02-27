@@ -72,7 +72,7 @@ declare -a App_Install=(
 	"pidgin:	pidgin"
 	"pix:	pix"
 	"qbittorrent:	qbittorrent"
-	"qemu:	qemu-kvm qemu-system-x86 libvirt-daemon-system libvirt-clients virt-viewer"
+	"qemu:	qemu-kvm qemu-system-x86 libvirt-daemon-system libvirt-clients"
 	"rhythmbox:	rhythmbox"
 	"scrcpy:	scrcpy"
 	"seahorse:	seahorse"

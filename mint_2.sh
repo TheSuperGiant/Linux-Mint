@@ -332,6 +332,12 @@ box_part "Installing programs"
 
 sudo apt update
 
+if systemd-detect-virt | grep -q "kvm\|qemu"; then
+	sudo apt install -y spice-vdagent
+	sudo systemctl enable spice-vdagentd
+	sudo systemctl start spice-vdagentd
+fi
+
 if [[ "$App_Install__pcloud" == "1" ]]; then
 	#ensure that the browser is downloading to folder ~/Downloads
 	xdg-open "https://www.pcloud.com/how-to-install-pcloud-drive-linux.html?download=electron-64"
