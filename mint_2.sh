@@ -173,6 +173,7 @@ fi
 #add_device_label
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/add_device_label.sh)
 
+box_part "tmp moving to ram"
 tmp() {
 	local new_value="tmpfs  /tmp  tmpfs  size=$1,mode=1777  0  0"
 	if ! sudo grep -q "$new_value" /etc/fstab; then
@@ -399,6 +400,8 @@ fi
 if [[ "$App_Install__pcloud" == "1" ]]; then
 	chmod +x ~/Downloads/pcloud
 fi
+
+#Program settings
 
 #flatpak list
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__Flatpak.sh)
