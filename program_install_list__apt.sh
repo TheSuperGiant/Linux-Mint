@@ -91,7 +91,7 @@ declare -a App_Install=(
 	"transmission:	transmission-gtk"
 	"ufw:	ufw"
 	"vim:	vim"
-	"virt_viewer:	virt-viewer virtualbox-guest-additions-iso"
+	"virt_viewer:	virt-viewer"
 	"virtualbox:	virtualbox virtualbox-guest-additions-iso"
 	"vivaldi:	vivaldi-stable"
 	"vlc:	vlc"
