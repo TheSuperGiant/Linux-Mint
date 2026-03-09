@@ -24,8 +24,8 @@ http_check() {
 
 #check for loaded in functions.
 
-function_sh=$(curl -s https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/functions.sh)
-function_sh_mint=$(curl -s "https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions.sh")
+#function_sh=$(curl -s https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/functions.sh)
+#function_sh_mint=$(curl -s "https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions.sh")
 #local if internet isnt availble
 
 
@@ -77,7 +77,7 @@ for alias in $(aliasi "$function_sh_mint"); do
 	alias_adding "$alias" "$function_sh_mint"
 done
 
-ubuntu_version_name=$(grep UBUNTU_CODENAME /etc/os-release | cut -d= -f2)
+ubuntu_version_name=$(source /etc/os-release; echo "$UBUNTU_CODENAME")
 
 case $ubuntu_version_name in
 	bionic) ubuntu_ver="18.04" ;;
@@ -185,7 +185,7 @@ tmp() {
 		restart=1
 	fi
 }
-ram__tmp__value=$(echo "$ram * 1.01" | bc | awk '{printf "%.0f\n", $0}') #in mb *1.01
+ram__tmp__value=$((ram * 101 / 100)) #in mb *1.01
 if [[ "$ram__tmp" == 1 ]]; then
 	if [[ "$ram__tmp__value" -ge "32000" ]]; then
 		tmp 4G
