@@ -76,7 +76,7 @@ ${FUNCNAME[1]} -r \"repo\" -u \"user\" -I
 ${FUNCNAME[1]} -r \"repo\" -u \"user\" -j
 ${FUNCNAME[1]} -r \"repo\" -u \"user\" -U"
 	}
-	if [[ $# == 0 ]] || printf '%s\n' "$@" | grep -qE '^-(h|help)$|^--help$'; then
+	if [[ $# == 0 ]] || [[ " $* " =~ [[:space:]](-h|-help|--help)[[:space:]] ]]; then
 		help_text
 		return
 	fi
@@ -119,8 +119,8 @@ ${FUNCNAME[1]} -r \"repo\" -u \"user\" -U"
 				shift
 				;;
 			*)
-				echo "Unknown option: $1"
 				help_text
+				error_default "Unknown option: $1"
 				return
 				;;
 		esac
