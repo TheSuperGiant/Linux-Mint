@@ -259,7 +259,7 @@ if [[ "$App_Install__hp_printer__on_decetion" == "1" ]]; then
 		App_Install__hp_printer=1
 	fi
 fi
-if [[ "$numlock_startup" == "on" || "$numlock_startup" == "off" ]]; then
+if [[ "$numlock_startup" =~ ^(on|off)$ ]]; then
 	App_Install__numlockx=1
 fi
 
