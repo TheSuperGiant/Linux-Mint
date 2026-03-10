@@ -12,6 +12,7 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 
 interface_name=$(ip route | awk '/^default/ {print $5}')
 
+#doesnt using it right now
 http_check() {
 	if [[ "$1" == *"http"* ]]; then
 		source <(curl -s -L $1)
@@ -22,14 +23,9 @@ http_check() {
 
 #http_check $1
 
-#check for loaded in functions.
-
-#function_sh=$(curl -s https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/functions.sh)
-#function_sh_mint=$(curl -s "https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions.sh")
-#local if internet isnt availble
 
 
-
+#to other file with ditro + distro_famaly variable entries adding.
 for function in "$function_sh" "$function_sh_mint"; do
 	while IFS= read -r line; do
 		if [[ "$line" == alias* ]]; then
