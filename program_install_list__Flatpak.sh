@@ -13,7 +13,7 @@ declare -a App_Install=(
 	"heroic_launcher:	com.heroicgameslauncher.hgl"
 	"jitsi_meet:	org.jitsi.jitsi-meet"
 	"losslesscut:	no.mifi.losslesscut"
-	"MakeMKV:	com.makemkv.MakeMKV"
+	"makemkv:	com.makemkv.MakeMKV"
 	"minecraft_launcher:	com.mojang.Minecraft"
 	#"librewolf:	io.gitlab.librewolf-community"
 	#"mullvad_browser:	net.mullvad.MullvadBrowser"
