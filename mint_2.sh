@@ -36,6 +36,10 @@ for function in "$function_sh" "$function_sh_mint"; do
 	source <(echo "$function" | sed -E '/^alias / s/\\"/"/g' | sed -E 's/^alias ([^=]+)=["](.*)["]$/\1() {\n  \2\n}/')
 done
 
+#variable function needs
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable_function_needs.sh)
+echo "$display_manager" #temp
+
 #pause
 echo $SUDO_USER
 echo $LOGNAME
