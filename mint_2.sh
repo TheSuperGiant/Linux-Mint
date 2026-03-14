@@ -7,8 +7,7 @@
 #sudo without password
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/without_password_startup.sh)
 
-#variable
-#source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable.sh)
+#pre_2
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/pre_2.sh)
 
 interface_name=$(ip route | awk '/^default/ {print $5}')
@@ -24,32 +23,9 @@ http_check() {
 
 #http_check $1
 
-
-
-#to other file with ditro + distro_famaly variable entries adding.
-#for function in "$function_sh" "$function_sh_mint"; do
-	#while IFS= read -r line; do
-		#if [[ "$line" == alias* ]]; then
-			#alias=$(echo "$line" | cut -d' ' -f2 | cut -d'=' -f1)
-			#unalias -a "$alias"
-		#fi
-	#done < <(echo "$function")
-	#source <(echo "$function" | sed -E '/^alias / s/\\"/"/g' | sed -E 's/^alias ([^=]+)=["](.*)["]$/\1() {\n  \2\n}/')
-#done
-
-#variable function needs
-#source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/variable_function_needs.sh)
-
 #pause
 echo $SUDO_USER
 echo $LOGNAME
-
-echo "-------add_device_label---------"
-add_device_label
-echo "-------github_program_updater---------"
-github_program_updater
-echo "-------display_manager--------"
-echo "$display_manager"
 
 ssu
 
