@@ -458,11 +458,11 @@ if [[ "$Firewall__Default" == "1" ]]; then
 	fi
 fi
 
-#settings
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
-
 #Flatpak app settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/flatpak_app_settings.sh)
+
+#settings
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
 #github repos
 if [[ "$script_main" == 1 || "$script_startup" == 1 ]]; then

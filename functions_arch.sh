@@ -8,6 +8,7 @@ function__arch__add_dns=1
 function__arch__add_function=1
 function__arch__add_lightdm=1
 function__arch__add_sudo=1
+function__arch__add_to_row=1
 function__arch__bool=1
 function__arch__box=1
 function__arch__box_part=1
