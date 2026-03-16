@@ -27,7 +27,7 @@ http_check() {
 echo $SUDO_USER
 echo $LOGNAME
 
-ssu
+sud
 
 #dns
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/dns.sh)
