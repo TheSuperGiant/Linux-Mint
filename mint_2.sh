@@ -461,16 +461,19 @@ fi
 #Flatpak app settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/flatpak_app_settings.sh)
 
-#settings
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
-
 #github repos
 if [[ "$script_main" == 1 || "$script_startup" == 1 ]]; then
 	git_repo__thesupergiant__linux_mint=1
 fi
 
+#settings
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
+
 #github updater
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/github_git_repo.sh)
+
+#settings
+#source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/settings.sh)
 
 if [[ "$App_Install__waydroid" == "1" ]]; then
 	#list based on variable.
