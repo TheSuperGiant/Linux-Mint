@@ -56,6 +56,8 @@ done
 
 for alias in $(aliasi "$function_sh"); do
 	if [[ "$(eval echo \${function__arch__$alias})" == "1" ]]; then
+	#varname="function__arch_$function"
+	#if [[ "${!varname}" == "1" ]]; then
 		alias_adding "$alias" "$function_sh"
 	fi
 done
@@ -343,11 +345,7 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
-	#varname="App_Install__$key"
-	#if [[ "${!varname}" == "1" ]]; then
-	#if [[ $(var_val "App_Install__" "$key") == "1" ]]; then
-	if [[ $(var_val "App_Install__$key") == "1" ]]; then
-#	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
+	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		apt install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi

@@ -43,4 +43,5 @@ function__arch__ssh_key=1
 function__arch__sud=1
 function__arch__update=0
 function__arch__update_row=1
+function__arch__var_val=1
 #function__arch__wdroid=1
