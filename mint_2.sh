@@ -43,10 +43,7 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/he
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/functions_alias_adding.sh)
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/functions_arch.sh)
 for function in $(functi "$function_sh"); do
-	if [[ "$(eval echo \${function__arch__$function})" == "1" ]]; then
-	#testing new way without eval
-	#varname="function__arch_$function"
-	#if [[ "${!varname}" == "1" ]]; then
+	if [[ "$(var_val function__arch__$function)" == "1" ]]; then
 		function_adding "$function" "$function_sh"
 	fi
 done
@@ -55,7 +52,7 @@ for function in $(functi "$function_sh_mint"); do
 done
 
 for alias in $(aliasi "$function_sh"); do
-	if [[ "$(eval echo \${function__arch__$alias})" == "1" ]]; then
+	if [[ "$(var_val function__arch__$alias)" == "1" ]]; then
 		alias_adding "$alias" "$function_sh"
 	fi
 done
@@ -125,7 +122,8 @@ declare -a Debloading__linux_mint=(
 
 for debload in "${Debloading__linux_mint[@]}"; do
 	program_name="${debload%%:*}"
-	if [[ "$(eval echo   \$Debloading__linux_mint__$program_name)" == "1" ]]; then
+	#if [[ "$(eval echo   \$Debloading__linux_mint__$program_name)" == "1" ]]; then
+	if [[ "$(var_val Debloading__linux_mint__$program_name)" == "1" ]]; then
 		apt_name=$(echo "${debload##*:}" | sed -E 's/^[[:space:]]+//')
 		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
 	fi
@@ -262,7 +260,8 @@ for needs in "${install_needed[@]}"; do
 	if [[ ${!needing} == "1" ]]; then
 		need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
 		for n in ${need[@]}; do
-			eval "App_Install__$n=1"
+			#eval "App_Install__$n=1"
+			declare -g "App_Install__$n=1"
 		done
 	fi
 done
@@ -301,7 +300,7 @@ declare -a apt_addrepo_programs=(
 )
 for apt_addrepo_program in "${apt_addrepo_programs[@]}"; do
 	IFS=';' read -ra apt_addrepo_parts <<< "${apt_addrepo_program}"
-	if [[ "$(eval echo \$App_Install__${apt_addrepo_parts[0]})" == "1" ]]; then
+	if [[ "$(var_val App_Install__${apt_addrepo_parts[0]})" == "1" ]]; then
 		echo "${apt_addrepo_parts[0]}"
 		for i in "${!apt_addrepo_parts[@]}"; do
 			apt_addrepo_parts[$i]="${apt_addrepo_parts[$i]#"${apt_addrepo_parts[$i]%%[! $'\t']*}"}"
@@ -343,12 +342,7 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
-	#varname="App_Install__$key"
-	#if [[ "${!varname}" == "1" ]]; then
-	#if [[ $(var_val "App_Install__" "$key") == "1" ]]; then
-	#if [[ $(var_val "App_Install__$key") == "1" ]]; then
 	if [[ "$(var_val App_Install__$key)" == "1" ]]; then
-#	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		apt install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi
@@ -401,7 +395,7 @@ fi
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__Flatpak.sh)
 for app in "${App_Install[@]}"; do
 	key="${app%%:*}"
-	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
+	if [[ "$(var_val App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		flatpak install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi
