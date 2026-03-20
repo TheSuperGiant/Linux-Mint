@@ -346,7 +346,8 @@ for app in "${App_Install[@]}"; do
 	#varname="App_Install__$key"
 	#if [[ "${!varname}" == "1" ]]; then
 	#if [[ $(var_val "App_Install__" "$key") == "1" ]]; then
-	if [[ $(var_val "App_Install__$key") == "1" ]]; then
+	#if [[ $(var_val "App_Install__$key") == "1" ]]; then
+	if [[ "$(var_val App_Install__$key)" == "1" ]]; then
 #	if [[ "$(eval echo \$App_Install__$key)" == "1" ]]; then
 		box_sub "$key"
 		apt install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
