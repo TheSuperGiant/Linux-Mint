@@ -122,7 +122,6 @@ declare -a Debloading__linux_mint=(
 
 for debload in "${Debloading__linux_mint[@]}"; do
 	program_name="${debload%%:*}"
-	#if [[ "$(eval echo   \$Debloading__linux_mint__$program_name)" == "1" ]]; then
 	if [[ "$(var_val Debloading__linux_mint__$program_name)" == "1" ]]; then
 		apt_name=$(echo "${debload##*:}" | sed -E 's/^[[:space:]]+//')
 		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
@@ -260,7 +259,6 @@ for needs in "${install_needed[@]}"; do
 	if [[ ${!needing} == "1" ]]; then
 		need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
 		for n in ${need[@]}; do
-			#eval "App_Install__$n=1"
 			declare -g "App_Install__$n=1"
 		done
 	fi
@@ -354,6 +352,7 @@ if [[ "$App_Install__flatpak" == "1" ]]; then
 fi
 
 #if [ "$App_Install__brew" == "1" ]; then
+	#if i gonna re-enableing it then change eval code if possible
 	#apt install git build-essential -y
 	#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 	#echo >> /home/giant/.bashrc
