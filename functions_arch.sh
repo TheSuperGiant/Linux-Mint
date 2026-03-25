@@ -36,6 +36,7 @@ function__arch__paru_clean=0
 function__arch__pause=1
 function__arch__pf=1
 function__arch__s_link=1
+function__arch__service_toggle=1
 function__arch__sp=2
 function__arch__start_s=2
 function__arch__ssh_agt=1
