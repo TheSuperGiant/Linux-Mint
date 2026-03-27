@@ -1,7 +1,7 @@
 declare -a required=(
 	#1
 	"function__github_program_updater:	box_sub error"
-	"function__update:	ap github_program_updater"
+	"function__update:	ap github_program_updater var_val"
 	#2
 	"function__ap:	apt_fail"
 )
