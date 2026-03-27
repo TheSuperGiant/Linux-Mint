@@ -30,7 +30,7 @@ apt_fail() {
 		while IFS= read -r line1; do
 			if echo "$line1" | grep -qE "Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 				local dpkg_error=1
-			elif echo "$line1" | grep -ne "Conflicting values set for option Signed-By regarding source "; then
+			elif echo "$line1" | grep -qe "Conflicting values set for option Signed-By regarding source "; then
 				keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '1p')
 				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
 				local keyring_value=1
@@ -43,8 +43,8 @@ apt_fail() {
 			elif [[ "$keyring_value" == "1" ]]; then
 				for file in "$keyring_value__file_1" "$keyring_value__file_2"; do
 					sudo rm "$file"
-					#file=${file##*/}; file=${file%.*}
-					#sudo rm /etc/apt/sources.list.d/*"$file"*
+					file=${file##*/}; file=${file%.*}
+					sudo rm /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
 				done
 				local keyring_value=0
