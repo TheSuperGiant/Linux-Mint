@@ -50,6 +50,8 @@ apt_fail() {
 					file=${file##*/}; file=${file%.*}
 					sudo rm -f /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
+					echo "$file" #temp
+					pause
 				done
 				#local keyring_value=0
 			#else
