@@ -33,8 +33,8 @@ apt_fail() {
 			if echo "$line1" | grep -qE "Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 				local dpkg_error=1
 			elif echo "$line1" | grep -qe "Conflicting values set for option Signed-By regarding source "; then
-				keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '1p')
-				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
+				local keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$line1" | sed -n '1p')
+				local keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$line1" | sed -n '2p')
 				local keyring_value=1
 			fi
 			if [[ "$dpkg_error" == "1" ]]; then
@@ -43,13 +43,18 @@ apt_fail() {
 				sudo apt update
 				sudo apt upgrade -y
 			elif [[ "$keyring_value" == "1" ]]; then
+				echo "file1: $keyring_value__file_1" #temp
+				echo "file2: $keyring_value__file_2" #temp
+
 				echo "t2" #temp
 				pause #temp
 				for file in "$keyring_value__file_1" "$keyring_value__file_2"; do
-					echo "$file" #temp
-					sudo rm -f "$file"
-					file=${file##*/}; file=${file%.*}
-					sudo rm -f /etc/apt/sources.list.d/*"$file"*
+					echo "file: $file" #temp
+					#sudo rm -f "$file"
+					sudo rm "$file"
+					local file=${file##*/}; file=${file%.*}
+					#sudo rm -f /etc/apt/sources.list.d/*"$file"*
+					sudo rm /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
 					echo "$file" #temp
 					pause #temp
