@@ -1,5 +1,6 @@
 ap() {
 	apt_fail apt $@
+	#apt_fail apt $@ 2>&1
 }
 apt_addrepo() {
 	download_location="/run"
@@ -27,31 +28,41 @@ apt_addrepo() {
 apt_fail() {
 	while [[ "$dpkg_error" != "0" && "$keyring_value" != "0" ]]; do
 		while IFS= read -r line1; do
-			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
+			#echo "$line1"
+			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
+			if echo "$line1" | grep -qE "Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
 				local dpkg_error=1
-			elif echo "$line1" | grep -ne "E: Conflicting values set for option Signed-By regarding source"; then
+			#fi
+			#elif printf '%s/n' "$line1" | grep -ne "E: Conflicting values set for option Signed-By regarding source "; then
+			elif echo "$line1" | grep -ne "Conflicting values set for option Signed-By regarding source "; then
+				echo "t1" #temp
 				keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '1p')
 				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
 				local keyring_value=1
 			fi
-			if [[ "$dpkg_error" == "1" ]]; then
+			if [[ $dpkg_error == "1" ]]; then
 				sudo dpkg --configure -a
 				sudo apt install -f
 				sudo apt update
 				sudo apt upgrade -y
 			elif [[ "$keyring_value" == "1" ]]; then
+				echo "t2" #temp
 				sudo rm "$keyring_value__file_1"
 				sudo rm "$keyring_value__file_2"
 				keyring_value__name_1=${keyring_value__file_1##*/}; keyring_value__name_1=${n1%.*}
 				keyring_value__name_2=${keyring_value__file_2##*/}; keyring_value__name_2=${n2%.*}
 				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_1"*
 				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_2"*
+				#break 2 #temp
 			else
 				local dpkg_error=0
 				local keyring_value=0
 			fi
 		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
+		#done < <(sudo script -q -c "sudo LANG=C $* 2>&1" | tee /dev/stderr)
+		#done < <(sudo script -q -c "sudo LANG=C $* 2>&1" | tee /dev/stderr)
+		#done < <(sudo script -q -c "sudo LANG=C $*")
 	done
 }
 github_program_updater() {
