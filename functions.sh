@@ -44,14 +44,15 @@ apt_fail() {
 				sudo apt upgrade -y
 			elif [[ "$keyring_value" == "1" ]]; then
 				echo "t2" #temp
-				pause
+				pause #temp
 				for file in "$keyring_value__file_1" "$keyring_value__file_2"; do
+					echo "$file" #temp
 					sudo rm -f "$file"
 					file=${file##*/}; file=${file%.*}
 					sudo rm -f /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
 					echo "$file" #temp
-					pause
+					pause #temp
 				done
 				#local keyring_value=0
 			#else
