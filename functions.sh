@@ -45,6 +45,8 @@ apt_fail() {
 				sudo rm "$keyring_value__file_2"
 				keyring_value__name_1=${keyring_value__file_1##*/}; keyring_value__name_1=${n1%.*}
 				keyring_value__name_2=${keyring_value__file_2##*/}; keyring_value__name_2=${n2%.*}
+				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_1"*
+				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_2"*
 			else
 				local dpkg_error=0
 				local keyring_value=0
