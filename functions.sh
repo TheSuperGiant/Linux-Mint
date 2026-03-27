@@ -25,19 +25,29 @@ apt_addrepo() {
 	echo "------------------------------------"
 }
 apt_fail() {
-	while [[ $dpkg_error != "0" ]]; do
+	while [[ "$dpkg_error" != "0" && "$keyring_value" != "0" ]]; do
 		while IFS= read -r line1; do
 			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
 				local dpkg_error=1
+			elif  echo "$line1" | grep -ne "E: Conflicting values set for option Signed-By regarding source"
+				keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '1p')
+				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
+				local keyring_value=1
 			fi
-			if [[ $dpkg_error == "1" ]]; then
+			if [[ "$dpkg_error" == "1" ]]; then
 				sudo dpkg --configure -a
 				sudo apt install -f
 				sudo apt update
 				sudo apt upgrade -y
+			elif [[ "$keyring_value" == "1" ]]; then
+				sudo rm "$keyring_value__file_1"
+				sudo rm "$keyring_value__file_2"
+				keyring_value__name_1=${keyring_value__file_1##*/}; keyring_value__name_1=${n1%.*}
+				keyring_value__name_2=${keyring_value__file_2##*/}; keyring_value__name_2=${n2%.*}
 			else
 				local dpkg_error=0
+				local keyring_value=0
 			fi
 		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
 	done
