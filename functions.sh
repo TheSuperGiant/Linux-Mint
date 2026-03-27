@@ -30,7 +30,7 @@ apt_fail() {
 			if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 			#if echo "$line1" | grep -qE "E: Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)" || echo "$line1" | grep -qE "E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem. " ; then
 				local dpkg_error=1
-			elif  echo "$line1" | grep -ne "E: Conflicting values set for option Signed-By regarding source"
+			elif echo "$line1" | grep -ne "E: Conflicting values set for option Signed-By regarding source"; then
 				keyring_value__file_1=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '1p')
 				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
 				local keyring_value=1
