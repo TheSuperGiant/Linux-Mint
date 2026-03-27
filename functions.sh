@@ -27,6 +27,8 @@ apt_addrepo() {
 }
 apt_fail() {
 	while [[ "$dpkg_error" != "0" && "$keyring_value" != "0" ]]; do
+		local dpkg_error=0
+		local keyring_value=0
 		while IFS= read -r line1; do
 			if echo "$line1" | grep -qE "Sub-process /usr/bin/dpkg returned an error code \([0-9]+\)"; then
 				local dpkg_error=1
@@ -47,10 +49,10 @@ apt_fail() {
 					sudo rm /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
 				done
-				local keyring_value=0
-			else
-				local dpkg_error=0
-				local keyring_value=0
+				#local keyring_value=0
+			#else
+				#local dpkg_error=0
+				#local keyring_value=0
 			fi
 		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
 	done
