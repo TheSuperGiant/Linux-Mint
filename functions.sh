@@ -41,7 +41,7 @@ apt_fail() {
 				keyring_value__file_2=$(grep -oP '/etc/apt/keyrings/\S+' <<< "$msg" | sed -n '2p')
 				local keyring_value=1
 			fi
-			if [[ $dpkg_error == "1" ]]; then
+			if [[ "$dpkg_error" == "1" ]]; then
 				sudo dpkg --configure -a
 				sudo apt install -f
 				sudo apt update
@@ -55,6 +55,7 @@ apt_fail() {
 				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_1"*
 				sudo rm /etc/apt/sources.list.d/*"$keyring_value__name_2"*
 				#break 2 #temp
+				local keyring_value=0
 			else
 				local dpkg_error=0
 				local keyring_value=0
