@@ -43,26 +43,12 @@ apt_fail() {
 				sudo apt update
 				sudo apt upgrade -y
 			elif [[ "$keyring_value" == "1" ]]; then
-				echo "file1: $keyring_value__file_1" #temp
-				echo "file2: $keyring_value__file_2" #temp
-
-				echo "t2" #temp
-				pause #temp
 				for file in "$keyring_value__file_1" "$keyring_value__file_2"; do
-					echo "file: $file" #temp
-					#sudo rm -f "$file"
 					sudo rm "$file"
 					local file=${file##*/}; file=${file%.*}
-					#sudo rm -f /etc/apt/sources.list.d/*"$file"*
-					sudo rm /etc/apt/sources.list.d/*"$file"*
+					sudo rm -f /etc/apt/sources.list.d/*"$file"*
 					sudo apt update
-					echo "$file" #temp
-					pause #temp
 				done
-				#local keyring_value=0
-			#else
-				#local dpkg_error=0
-				#local keyring_value=0
 			fi
 		done < <(sudo script -q -c "sudo LANG=C $*" | tee /dev/stderr)
 	done
