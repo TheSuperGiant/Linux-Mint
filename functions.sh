@@ -1,6 +1,5 @@
 ap() {
 	apt_fail apt $@
-	#apt_fail apt $@ 2>&1
 }
 apt_addrepo() {
 	download_location="/run"

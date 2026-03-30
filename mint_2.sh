@@ -76,7 +76,7 @@ esac
 #sudo apt remove docker docker-engine docker.io containerd runc
 
 box_part "apt list update"
-sudo apt update
+ap update
 
 box_part "Debloading"
 
@@ -317,7 +317,7 @@ fi
 
 box_part "Installing programs"
 
-sudo apt update
+ap update
 
 if systemd-detect-virt | grep -q "kvm\|qemu"; then
 	sudo apt install -y spice-vdagent
