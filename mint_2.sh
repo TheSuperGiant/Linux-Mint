@@ -148,7 +148,7 @@ fi
 box_sub "Removing not used packages"
 sudo apt autoremove -y
 
-if [[ $files__linux_mint__background_images == "1" ]]; then
+if [[ "$files__linux_mint__background_images" == "1" ]]; then
 	sudo rm -r "/usr/share/backgrounds/linuxmint"
 	sudo rm -r "/usr/share/backgrounds/linuxmint-wallpapers"
 fi
