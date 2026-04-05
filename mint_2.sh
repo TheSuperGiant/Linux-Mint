@@ -5,7 +5,7 @@
 # I am not responsible for any damage, data loss, or other issues that may result from the use of this script.
 
 #sudo without password
-source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/without_password_startup.sh)
+#source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/without_password_startup.sh)
 
 #pre_2
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/pre_2.sh)
@@ -246,23 +246,26 @@ if [[ "$numlock_startup" =~ ^(on|off)$ ]]; then
 	App_Install__numlockx=1
 fi
 
-declare -a install_needed=(
+declare -a install_needs=(
 	"App_Install__keepass:	xdotool"
 	"App_Install__librewolf:	extrepo"
-	"App_Install__notepadPlusPlus:	wine jq"
+	"App_Install__notepadPlusPlus:	wine jq winetricks"
 	"App_Install__winboat:	docker flatpak"
 	"script_main:	git"
 )
 
-for needs in "${install_needed[@]}"; do
-	needing="${needs%%:*}"
-	if [[ ${!needing} == "1" ]]; then
-		need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
-		for n in ${need[@]}; do
-			declare -g "App_Install__$n=1"
-		done
-	fi
-done
+#install needs loop
+source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/install_needs__loop.sh)
+
+#for needs in "${install_needs[@]}"; do
+	#needing="${needs%%:*}"
+	#if [[ ${!needing} == "1" ]]; then
+		#need=$(echo "${needs##*:}" | sed -E 's/^[[:space:]]+//')
+		#for n in ${need[@]}; do
+			#declare -g "App_Install__$n=1"
+		#done
+	#fi
+#done
 
 #if [ "$App_Install__winboat" == "1" ]; then
 	#check if still needed.

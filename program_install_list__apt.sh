@@ -1,5 +1,6 @@
 declare -a App_Install=(
 	"wine:	wine"
+	"winetricks:	winetricks"
 	"flatpak:	flatpak"
 	"snap:	snapd"
 	#"keyrings:	libsecret-1-0 libsecret-1-dev gnome-keyring"
@@ -10,7 +11,7 @@ declare -a App_Install=(
 	#"biglybt:	biglybt default-jre libgtk-3-dev libswt-gtk-4-java" #ai local asking if better to set it in flatpak
 	"brave:	brave-browser curl"
 	"bleachbit:	bleachbit"
-	"bluetooth:	blueman bluetooth bluez bluez-tools linux-firmware pipewire pipewire-pulse pipewire-audio-client-libraries libspa-0.2-bluetooth"
+	"bluetooth:	blueman bluetooth bluez bluez-tools linux-firmware pipewire pipewire-pulse ipppipewire-audio-client-libraries libspa-0.2-bluetooth"
 	"bulky:	bulky"
 	"btop:	btop"
 	"calibre:	calibre"
