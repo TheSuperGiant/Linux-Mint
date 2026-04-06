@@ -242,9 +242,12 @@ if [[ "$App_Install__hp_printer__on_decetion" == "1" ]]; then
 		App_Install__hp_printer=1
 	fi
 fi
-if [[ "$numlock_startup" =~ ^(on|off)$ ]]; then
-	App_Install__numlockx=1
-fi
+#if [[ "$numlock_startup" =~ ^(on|off)$ ]]; then
+#	App_Install__numlockx=1
+#fi
+
+#install needs
+source <(curl -s -L $TheSuperGiant_Arch_repo_uri__part/install_need.sh)
 
 declare -a install_needs=(
 	"App_Install__keepass:	xdotool"
