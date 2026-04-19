@@ -1,4 +1,4 @@
-0declare -a App_Install=(
+declare -a App_Install=(
 	"wine:	wine"
 	"winetricks:	winetricks"
 	"flatpak:	flatpak"
