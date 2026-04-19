@@ -1,4 +1,4 @@
-declare -a App_Install=(
+0declare -a App_Install=(
 	"wine:	wine"
 	"winetricks:	winetricks"
 	"flatpak:	flatpak"
@@ -9,9 +9,9 @@ declare -a App_Install=(
 	"audacity:	audacity"
 	"backup_tool:	mintbackup"
 	#"biglybt:	biglybt default-jre libgtk-3-dev libswt-gtk-4-java" #ai local asking if better to set it in flatpak
-	"brave:	brave-browser curl"
 	"bleachbit:	bleachbit"
 	"bluetooth:	blueman bluetooth bluez bluez-tools linux-firmware pipewire pipewire-pulse pipewire-audio-client-libraries libspa-0.2-bluetooth"
+	"brave:	brave-browser curl"
 	"bulky:	bulky"
 	"btop:	btop"
 	"calibre:	calibre"
@@ -53,6 +53,7 @@ declare -a App_Install=(
 	"krita:	krita"
 	"libreoffice:	libreoffice"
 	"librewolf:	librewolf"
+	"imagemagick:	imagemagick"
 	"megasync:	megasync"
 	"minecraft_server:	openjdk-21-jre-headless openjdk-21-jdk-headless" #java maby not needed anymore
 	"mintchat:	mintchat"

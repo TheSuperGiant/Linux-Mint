@@ -11,6 +11,7 @@ function__arch__add_sudo=1
 function__arch__add_to_row=1
 function__arch__bool=1
 function__arch__box=1
+function__arch__box_betwean=1
 function__arch__box_part=1
 function__arch__box_sub=1
 function__arch__Clean_Folder=2

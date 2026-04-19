@@ -10,8 +10,6 @@
 #pre_2
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/pre_2.sh)
 
-interface_name=$(ip route | awk '/^default/ {print $5}')
-
 #doesnt using it right now
 http_check() {
 	if [[ "$1" == *"http"* ]]; then
@@ -27,7 +25,7 @@ http_check() {
 echo $SUDO_USER
 echo $LOGNAME
 
-sud
+#sud
 
 #dns
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/dns.sh)
@@ -121,10 +119,10 @@ declare -a Debloading__linux_mint=(
 )
 
 for debload in "${Debloading__linux_mint[@]}"; do
-	program_name="${debload%%:*}"
-	if [[ "$(var_val Debloading__linux_mint__$program_name)" == "1" ]]; then
+	name="${debload%%:*}"
+	if [[ "$(var_val Debloading__linux_mint__$name)" == "1" ]]; then
 		apt_name=$(echo "${debload##*:}" | sed -E 's/^[[:space:]]+//')
-		sudo apt purge -y "$apt_name" &> /dev/null && echo "$program_name removed." || echo "Failed to remove $program_name."
+		sudo apt purge -y "$apt_name" &> /dev/null && echo "$name removed." || echo "Failed to remove $name."
 	fi
 done
 box_sub "update manager"
@@ -230,12 +228,12 @@ fi
 #drivers
 
 #before 1
-if [[ "$Firewall__Default" == "1" ]]; then
-	App_Install__ufw=1
-	if [[ "$firewall_Recommanded_rules" == "1" ]]; then
-		App_Install__fail2ban=1
-	fi
-fi
+# if [[ "$Firewall__Default" == "1" ]]; then
+	# App_Install__ufw=1
+	# if [[ "$firewall_Recommanded_rules" == "1" ]]; then
+		# App_Install__fail2ban=1
+	# fi
+# fi
 if [[ "$App_Install__hp_printer__on_decetion" == "1" ]]; then
 	hp=$(lpinfo -v | grep -Ei "direct hp:/|direct hpfax:/|network dnssd://HP|network ipp://HP|network ipps://HP")
 	if [[ -n $hp ]]; then
@@ -252,7 +250,9 @@ source <(curl -s -L $TheSuperGiant_Arch_repo_uri__part/install_need.sh)
 declare -a install_needs=(
 	"App_Install__keepass:	xdotool"
 	"App_Install__librewolf:	extrepo"
-	"App_Install__notepadPlusPlus:	wine jq winetricks"
+	#"App_Install__minecraft:	openjdk_jre"
+	"App_Install__minecraft_server:	openjdk_jre_headless"
+	"App_Install__notepadPlusPlus:	wine winetricks"
 	"App_Install__winboat:	docker flatpak"
 	"script_main:	git"
 )
@@ -345,9 +345,9 @@ fi
 #apt install
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/program_install_list__apt.sh)
 for app in "${App_Install[@]}"; do
-	key="${app%%:*}"
-	if [[ "$(var_val App_Install__$key)" == "1" ]]; then
-		box_sub "$key"
+	name="${app%%:*}"
+	if [[ "$(var_val App_Install__$name)" == "1" ]]; then
+		box_sub "$name"
 		apt install $(echo "${app##*:}" | sed -E 's/^[[:space:]]+//') -y
 	fi
 done
@@ -375,13 +375,13 @@ if [[ "$App_Install__bluetooth" == "1" ]]; then
 	rm -rf ~/.config/pulse
 	rm -rf ~/.pulse*
 fi
-if [[ "$App_Install__docker" == "1" ]]; then
-	if ! groups | grep -q '\bdocker\b'; then
-		#sudo usermod -aG docker $USER
-		sudo usermod -aG docker $SUDO_USER
-		restart=1
-	fi
-fi
+# if [[ "$App_Install__docker" == "1" ]]; then
+	# if ! groups | grep -q '\bdocker\b'; then
+		# sudo usermod -aG docker $USER
+		# sudo usermod -aG docker $SUDO_USER
+		# restart=1
+	# fi
+# fi
 if [[ "$App_Install__notepadPlusPlus" == "1" ]]; then
 	if ! [[ -f "$HOME/.wine/drive_c/Program Files/Notepad++/notepad++.exe" ]]; then
 		box_sub "notepad++"
@@ -409,20 +409,20 @@ done
 if [[ "$App_Install__losslesscut" == "1" ]]; then
 	flatpak override --user --filesystem=home no.mifi.losslesscut
 fi
-if [[ "$App_Install__qemu" == "1" ]]; then
-	sudo systemctl enable libvirtd
-	sudo systemctl start libvirtd
-	if ! groups | grep -q '\blibvirt\b'; then
-		sudo usermod -aG libvirt,kvm $SUDO_USER
-		#sudo usermod -aG libvirt,kvm $USER
-		restart=1
-	fi
-fi
-if [[ "$App_Install__virtualbox" == "1" ]]; then
-	sudo systemctl stop libvirtd
-	sudo modprobe -r kvm_amd
-	echo "blacklist kvm_amd" | sudo tee /etc/modprobe.d/blacklist-kvm.conf
-fi
+# if [[ "$App_Install__qemu" == "1" ]]; then
+	# sudo systemctl enable libvirtd
+	# sudo systemctl start libvirtd
+	# if ! groups | grep -q '\blibvirt\b'; then
+		# sudo usermod -aG libvirt,kvm $SUDO_USER
+		# sudo usermod -aG libvirt,kvm $USER
+		# restart=1
+	# fi
+# fi
+# if [[ "$App_Install__virtualbox" == "1" ]]; then
+	# sudo systemctl stop libvirtd
+	# sudo modprobe -r kvm_amd
+	# echo "blacklist kvm_amd" | sudo tee /etc/modprobe.d/blacklist-kvm.conf
+# fi
 if [[ "$game_dependencies" == "1" ]]; then
 	#this must be still tested
 	sudo apt install python3-pyqt5 python3-pip git pipx -y
@@ -438,20 +438,22 @@ source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/r
 github_program_updater_programs
 
 
+#security
+source <(curl -s -L $TheSuperGiant_Arch_repo_uri__parts/security.sh)
 
-box_part "Secutity settings"
+# box_part "Secutity settings"
 
-if [[ "$Firewall__Default" == "1" ]]; then
-	sudo ufw enable
-	if [[ "$firewall_Recommanded_rules" == "1" ]]; then
-		sudo ufw default deny incoming
-		sudo ufw default allow outgoing
+# if [[ "$Firewall__Default" == "1" ]]; then
+	# sudo ufw enable
+	# if [[ "$firewall_Recommanded_rules" == "1" ]]; then
+		# sudo ufw default deny incoming
+		# sudo ufw default allow outgoing
 		#sudo systemctl enable --now fail2ban
-	fi
+	# fi
 
-	if [[ "$App_Install__waydroid" == "1" ]]; then
-		sudo ufw allow in on waydroid0
-		sudo ufw allow out on waydroid0
+	# if [[ "$App_Install__waydroid" == "1" ]]; then
+		# sudo ufw allow in on waydroid0
+		# sudo ufw allow out on waydroid0
 		#building in function later that it can add row of code in it if needed for some programs
 		#sudo nano /etc/ufw/before.rules
 		#under this
@@ -462,8 +464,8 @@ if [[ "$Firewall__Default" == "1" ]]; then
 
 
 		#restart=1 #only needed if ufw reload does not go to add in the g_firewall function
-	fi
-fi
+	# fi
+# fi
 
 #Flatpak app settings
 source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Arch/refs/heads/main/parts/flatpak_app_settings.sh)
