@@ -185,11 +185,13 @@ ${FUNCNAME[1]} -r \"repo\" -u \"user\" -U"
 	fi
 }
 update() {
+	apt autoremove -y
 	ap update
 	while [[ $updates != 0 ]]; do
 		apt_fail mintupdate-cli upgrade -y
 		updates=$(mintupdate-cli list | wc -l)
 	done
+	apt autoremove -y
 	flatpak update -y
 	if [[ $1 != "-g" ]]; then
 		source <(curl -s -L https://raw.githubusercontent.com/TheSuperGiant/Linux-Mint/refs/heads/main/parts/github_program_updater_programs.sh)
